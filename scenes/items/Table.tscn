@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://dc4t1iw0quxgi"]
+
+[ext_resource type="Texture2D" uid="uid://bceha40raq6rg" path="res://assets/mesa-quadrada.png" id="1_hkpum"]
+[ext_resource type="Script" uid="uid://c2ih8tsm40nsl" path="res://scripts/items/table.gd" id="2_70gn8"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_70gn8"]
+size = Vector2(494.5, 435)
+
+[node name="Table" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_hkpum")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(-0.75, -1.5)
+shape = SubResource("RectangleShape2D_70gn8")
+script = ExtResource("2_70gn8")
