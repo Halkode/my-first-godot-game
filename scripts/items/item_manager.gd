@@ -102,47 +102,33 @@ func _on_menu_option_selected(action: String, item: Node) -> void:
 	print("Action selected for ", item.item_name if item.has_method("item_name") else item.name, ": ", action)
 	hide_item_menu() # Esconde o menu após a seleção
 	
-	# Implemente a lógica para cada ação aqui
-	match action:
-		"Pegar":
-			_handle_pick_item(item)
-		"Examinar":
-			_handle_examine_item(item)
-		"Abrir":
-			_handle_open_item(item)
-		"Mover":
-			_handle_move_item(item)
-		"Trancar":
-			_handle_lock_item(item)
-		_:
-			print("Ação desconhecida: ", action)
+	# Delega a ação para o próprio item, se ele tiver o método handle_action
+	if item.has_method("handle_action"):
+		item.handle_action(action)
+	else:
+		# Fallback para ações genéricas se o item não tiver um handler específico
+		match action:
+			"Pegar":
+				_handle_pick_item(item)
+			"Examinar":
+				_handle_examine_item(item)
+			_:
+				print("Ação desconhecida ou não tratada pelo item: ", action)
 
-# --- Handlers de Ação ---
+# --- Handlers de Ação Genéricos (para itens que não têm handle_action) ---
 func _handle_pick_item(item: Node) -> void:
 	print("Pegou o item: ", item.item_name if item.has_method("item_name") else item.name)
-	if item is Area2D: # Se for um nó de cena, pode ser removido
-		item.queue_free() # Remove o item do mundo
-	display_message(item.item_name + " foi adicionado ao seu inventário.")
-	# Adicionar item ao inventário do player (futura funcionalidade)
+	var item_data = {"name": item.item_name if item.has_method("item_name") else item.name, "description": item.item_description if item.has_method("item_description") else "Sem descrição."}
+	if GameManager.add_item_to_inventory(item_data):
+		if item is Area2D: # Se for um nó de cena, pode ser removido
+			item.queue_free() # Remove o item do mundo
+		display_message(item.item_name + " foi adicionado ao seu inventário.")
+	else:
+		display_message("Inventário cheio! Não foi possível adicionar " + item.item_name + ".")
 
 func _handle_examine_item(item: Node) -> void:
 	print("Examinando: ", item.item_name if item.has_method("item_name") else item.name, " - ", item.item_description if item.has_method("item_description") else "Sem descrição.")
 	display_message(item.item_name + ": " + (item.item_description if item.has_method("item_description") else "Sem descrição."))
-
-func _handle_open_item(item: Node) -> void:
-	print("Abriu o item: ", item.item_name if item.has_method("item_name") else item.name)
-	display_message("Você abriu " + item.item_name + ".")
-	# Lógica para abrir (ex: mudar sprite, spawnar itens dentro)
-
-func _handle_move_item(item: Node) -> void:
-	print("Moveu o item: ", item.item_name if item.has_method("item_name") else item.name)
-	display_message("Você moveu " + item.item_name + ".")
-	# Lógica para mover (ex: click-to-move para o item)
-
-func _handle_lock_item(item: Node) -> void:
-	print("Trancou o item: ", item.item_name if item.has_method("item_name") else item.name)
-	display_message("Você trancou " + item.item_name + ".")
-	# Lógica para trancar
 
 # Função para exibir mensagens temporárias na tela
 func display_message(message: String) -> void:
@@ -176,3 +162,5 @@ func display_message(message: String) -> void:
 	tween.tween_property(message_label, "modulate", Color(1, 1, 1, 0), 0.5) # Fade out
 	tween.tween_callback(Callable(message_label, "queue_free")) # Remove a label
 	tween.tween_callback(Callable(message_label_container, "hide")) # Esconde o container
+
+

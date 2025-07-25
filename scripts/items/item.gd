@@ -2,6 +2,8 @@ class_name Item
 extends Node2D
 
 @export var item_name: String = "Item"
+@export var item_description: String = "Um item comum."
+@export var actions: Array[String] = ["Examinar", "Pegar"]
 @export var interaction_distance: float = 32.0
 @export var auto_face_player: bool = true
 
@@ -64,3 +66,5 @@ func set_tile_position(tilemap: TileMapLayer, tile_pos: Vector2i) -> void:
 	tile_position = tile_pos
 	global_position = tilemap.map_to_local(tile_pos)
 	print("Item ", item_name, " positioned at tile ", tile_pos, " world pos ", global_position)
+
+

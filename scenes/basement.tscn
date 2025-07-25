@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://c3q0g043j0m4"]
+
+[ext_resource type="Script" uid="uid://d0efnpejws3os" path="res://scripts/basement_scene.gd" id="1_v0g3j"]
+
+[node name="Basement" type="Node2D"]
+script = ExtResource("1_v0g3j")
+
+[node name="TileMap" type="TileMap" parent="."]
+cell_quadrant_size = 16
+format = 2
+
+[node name="Items" type="Node2D" parent="."]
+
+[node name="PlayerSpawn" type="Marker2D" parent="."]
+position = Vector2(0, 0)

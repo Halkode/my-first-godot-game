@@ -1,6 +1,8 @@
 extends Node2D
 
 @onready var item_manager: ItemManager = $ItemManager
+@onready var lighting_system: LightingSystem = $LightingSystem
+@onready var audio_manager: AudioManager = $AudioManager
 
 func _ready() -> void:
 	print("Inicializando jogo...")
@@ -13,6 +15,32 @@ func _ready() -> void:
 		print("ERRO: ItemManager não encontrado! Certifique-se de que foi adicionado à cena.")
 		return
 	
+	# Verificar se o LightingSystem existe
+	if not lighting_system:
+		print("ERRO: LightingSystem não encontrado! Certifique-se de que foi adicionado à cena.")
+		return
+	
+	# Verificar se o AudioManager existe
+	if not audio_manager:
+		print("ERRO: AudioManager não encontrado! Certifique-se de que foi adicionado à cena.")
+		return
+	
+	# Adicionar o player ao grupo "player" para o LightingSystem
+	var player_node = get_node_or_null("TileMaps/Player")
+	if player_node:
+		player_node.add_to_group("player")
+		lighting_system.player_node = player_node
+		
+	# Adicionar o GameManager ao grupo "game_manager"
+	var game_manager_node = get_node_or_null("/root/game_manager")
+	if game_manager_node:
+		game_manager_node.add_to_group("game_manager")
+		lighting_system.game_manager = game_manager_node
+		
+		# Conectar sinais do GameManager ao AudioManager
+		game_manager_node.fear_changed.connect(audio_manager._on_fear_changed)
+		game_manager_node.sanity_changed.connect(audio_manager._on_sanity_changed)
+
 	# Carregar e adicionar itens ao jogo
 	setup_items()
 
@@ -43,3 +71,5 @@ func setup_items() -> void:
 func _process(delta: float) -> void:
 	# Você pode adicionar lógica de jogo aqui se necessário
 	pass
+
+
