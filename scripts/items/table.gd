@@ -50,7 +50,6 @@ func create_interaction_menu() -> void:
 	interaction_menu.visible = false
 
 func interact(player: Node2D) -> void:
-	super.interact(player)
 	show_interaction_menu(player)
 
 func show_interaction_menu(player: Node2D) -> void:

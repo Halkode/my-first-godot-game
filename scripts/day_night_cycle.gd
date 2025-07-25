@@ -1,4 +1,3 @@
-class_name DayNightCycle
 extends Node
 
 signal day_started
@@ -10,7 +9,7 @@ signal night_started
 var current_time_of_day: float = 0.0 # 0.0 = início do dia, 1.0 = início da noite
 var is_day: bool = true
 
-@onready var game_manager: GameManager = get_node("/root/game_manager")
+# GameManager é um autoload e pode ser acessado diretamente
 
 func _ready() -> void:
 	start_day()
@@ -26,8 +25,7 @@ func _process(delta: float) -> void:
 			start_day()
 	
 	# Atualizar o GameManager com o estado do dia/noite
-	if game_manager:
-		game_manager.is_night = not is_day
+	GameManager.is_night = not is_day
 
 func start_day() -> void:
 	is_day = true
@@ -35,7 +33,7 @@ func start_day() -> void:
 	day_started.emit()
 	print("O dia começou!")
 	# Lógica para ajustar a iluminação global, etc.
-	# Exemplo: lighting_system.set_global_light_intensity(1.0)
+	# Exemplo: LightingSystem.set_global_light_intensity(1.0)
 
 func start_night() -> void:
 	is_day = false
@@ -43,7 +41,7 @@ func start_night() -> void:
 	night_started.emit()
 	print("A noite começou!")
 	# Lógica para ajustar a iluminação global, etc.
-	# Exemplo: lighting_system.set_global_light_intensity(0.2)
+	# Exemplo: LightingSystem.set_global_light_intensity(0.2)
 
 func get_time_of_day_progress() -> float:
 	if is_day:
@@ -56,5 +54,3 @@ func get_current_time_string() -> String:
 	var minutes = int(total_seconds / 60)
 	var seconds = int(fmod(total_seconds, 60))
 	return "%02d:%02d" % [minutes, seconds]
-
-

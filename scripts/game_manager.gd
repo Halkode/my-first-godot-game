@@ -1,4 +1,3 @@
-class_name GameManager
 extends Node
 
 # Singleton para gerenciar estado global do jogo
@@ -217,5 +216,3 @@ func display_message(message: String) -> void:
 	# Este método será implementado na UI ou em um sistema de mensagens dedicado
 	# Por enquanto, apenas imprime no console
 	print("MENSAGEM: ", message)
-
-

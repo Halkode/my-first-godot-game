@@ -1,14 +1,13 @@
-class_name CombatSystem
 extends Node
 
 signal entity_damaged(entity: Node, damage: float)
 signal entity_died(entity: Node)
 
-@onready var game_manager: GameManager = get_node("/root/game_manager")
+# GameManager é um autoload e pode ser acessado diretamente
 
 func _ready() -> void:
-	if not game_manager:
-		print("ERRO: GameManager não encontrado para o CombatSystem.")
+	# Não é necessário verificar o GameManager aqui, pois é um autoload
+	pass
 
 func attack(attacker: Node, target: Node, damage_amount: float) -> void:
 	if not target.has_method("take_damage"):
@@ -20,7 +19,7 @@ func attack(attacker: Node, target: Node, damage_amount: float) -> void:
 	entity_damaged.emit(target, damage_amount)
 
 	# Feedback visual/sonoro de ataque
-	# Exemplo: game_manager.audio_manager.play_sfx(preload("res://assets/sfx/hit_sound.wav"))
+	# Exemplo: AudioManager.play_sfx(preload("res://assets/sfx/hit_sound.wav"))
 
 func apply_damage(target: Node, damage_amount: float) -> void:
 	if target.has_method("take_damage"):
@@ -37,8 +36,8 @@ func check_death(entity: Node) -> void:
 		# Lógica de morte (remover do cenário, etc.)
 		if entity is CharacterBody2D:
 			entity.queue_free() # Exemplo: remove o inimigo
-			game_manager.modify_fear(-10) # Reduz medo ao derrotar inimigo
-			game_manager.modify_sanity(5) # Pequeno boost de sanidade
+			GameManager.modify_fear(-10) # Reduz medo ao derrotar inimigo
+			GameManager.modify_sanity(5) # Pequeno boost de sanidade
 
 func _on_entity_damaged(entity: Node, damage: float) -> void:
 	check_death(entity)
@@ -46,5 +45,3 @@ func _on_entity_damaged(entity: Node, damage: float) -> void:
 func _on_entity_died(entity: Node) -> void:
 	# Lógica adicional quando uma entidade morre
 	pass
-
-

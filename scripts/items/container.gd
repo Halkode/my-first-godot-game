@@ -50,12 +50,8 @@ func update_sprite() -> void:
 		elif not is_open and closed_sprite:
 			sprite.texture = closed_sprite
 
-func interact(player: Node2D) -> void:
-	# Atualizar ações disponíveis antes de mostrar o menu
-	update_available_actions()
-	super.interact(player)
-
 func handle_action(action: String) -> void:
+	# Este método é chamado pelo ItemManager
 	match action:
 		"Abrir":
 			open_container()
@@ -69,6 +65,8 @@ func handle_action(action: String) -> void:
 			search_container()
 		"Examinar":
 			examine_container()
+		_:
+			super.handle_action(action) # Chama o handler genérico do Item
 
 func open_container() -> void:
 	if is_locked:
@@ -204,4 +202,5 @@ func populate_with_random_items() -> void:
 		if container_items.size() < max_items:
 			var random_item = possible_items[randi() % possible_items.size()]
 			add_item_to_container(random_item)
+
 

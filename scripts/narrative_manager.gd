@@ -1,178 +1,120 @@
-class_name NarrativeManager
 extends Node
-
 signal memory_unlocked(memory_data: MemoryData)
 signal narrative_event_triggered(event_name: String)
-
-@onready var game_manager: GameManager = get_node("/root/game_manager")
+const MemoryData = preload("res://scripts/memory_data.gd")
+# GameManager é um autoload e pode ser acessado diretamente
 
 var memories: Array[MemoryData] = []
 var discovered_memories: Array[String] = []
 var narrative_flags: Dictionary = {}
 
 func _ready() -> void:
-	if not game_manager:
-		print("ERRO: GameManager não encontrado para o NarrativeManager.")
-	
 	initialize_memories()
-	
+
 	# Conectar ao sinal de memórias descobertas do GameManager
-	if game_manager:
-		game_manager.memory_discovered.connect(_on_memory_discovered)
+	GameManager.memory_discovered.connect(_on_memory_discovered)
 
 func initialize_memories() -> void:
 	# Memórias relacionadas à narrativa do porão
-	add_memory("memory_01", "Fragmento de Despertar", 
-		"Você se lembra vagamente de ter acordado aqui... mas quando? Há quanto tempo está neste lugar?",
-		"", "")
-	
-	add_memory("memory_02", "O Corpo ao Lado", 
-		"Havia um corpo ao seu lado quando acordou. Quem era? Por que estava ali? A imagem está turva, mas o cheiro de morte permanece.",
-		"Corpo", "Examinar")
-	
-	add_memory("memory_03", "Chaves Perdidas", 
-		"Você se lembra de ter tido chaves... muitas chaves. Elas abriam portas importantes. Onde estão agora?",
-		"Chave Enferrujada", "Pegar")
-	
-	add_memory("memory_04", "Fome Antiga", 
-		"A fome não é nova. Você já sentiu isso antes, por dias... semanas? Quando foi a última vez que comeu algo de verdade?",
-		"Comida Estragada", "Examinar")
-	
-	add_memory("memory_05", "Vozes no Escuro", 
-		"Há vozes que ecoam nas paredes... ou são apenas ecos da sua própria mente fragmentada? Elas sussurram coisas que você prefere não entender.",
-		"", "")
-	
-	add_memory("memory_06", "A Mesa Familiar", 
-		"Esta mesa... você já se sentou aqui antes. Havia papéis, documentos importantes. Agora só resta poeira e esquecimento.",
-		"Mesa Velha", "Examinar")
-	
-	add_memory("memory_07", "Luz da Vela", 
-		"A luz da vela costumava ser sua única companhia nas noites longas. Ela dançava nas paredes, criando sombras que pareciam vivas.",
-		"Vela", "Acender")
-	
-	add_memory("memory_08", "O Medo Crescente", 
-		"O medo não era assim antes. Ele cresceu, se alimentou da sua sanidade, se tornou uma entidade própria que habita este lugar.",
-		"", "")
-	
-	add_memory("memory_09", "Identidade Perdida", 
-		"Quem você era antes de acordar aqui? O espelho reflete um rosto que você mal reconhece. Será mesmo o seu?",
-		"Espelho Quebrado", "Examinar")
-	
-	add_memory("memory_10", "A Verdade Final", 
-		"Talvez... talvez você não esteja preso aqui por acaso. Talvez você pertença a este lugar. Talvez sempre tenha pertencido.",
+	add_memory("memory_01", "O Despertar no Escuro",
+		"A escuridão é a primeira coisa que você sente. Um cheiro de mofo e terra úmida. O frio penetra seus ossos. Você está deitado em um chão duro, sem lembranças de como chegou aqui. Uma sensação de vazio na mente e um pânico crescente no peito. Onde estou? Quem sou eu?",
 		"", "")
 
-func add_memory(id: String, title: String, text: String, item_name: String = "", action: String = "") -> void:
-	var memory = MemoryData.new(id, title, text, item_name, action)
-	memories.append(memory)
+	add_memory("memory_02", "A Presença Silenciosa",
+		"Ao seu lado, uma forma inerte. Um corpo. O cheiro de morte é inconfundível agora, misturado ao mofo. Não há sinais de violência, apenas uma quietude perturbadora. O rosto está virado para longe, mas a silhueta é estranhamente familiar. Um arrepio percorre sua espinha. Seria... alguém que você conhecia?",
+		"", "")
 
-func discover_memory(memory_id: String) -> bool:
-	if memory_id in discovered_memories:
-		return false # Já descoberta
-	
-	var memory = get_memory_by_id(memory_id)
-	if memory:
+	add_memory("memory_03", "As Portas Seladas",
+		"Você tateia na escuridão, encontrando paredes frias e úmidas. Há portas, mas todas estão trancadas, seladas. O desespero começa a se instalar. Não há saída aparente. A claustrofobia ameaça engoli-lo. A cada tentativa de abrir, a madeira range, mas não cede. Você está preso.",
+		"", "")
+
+	add_memory("memory_04", "O Ronco do Vazio",
+		"A fome. Uma dor aguda no estômago que se intensifica a cada minuto. Seu corpo clama por sustento, mas não há nada à vista. A fraqueza começa a tomar conta, e a mente, já confusa, se torna ainda mais turva. Quanto tempo você pode durar sem comida?",
+		"", "")
+
+	add_memory("memory_05", "Ecos do Passado",
+		"Cada objeto que você toca, cada sombra que dança na periferia da sua visão, parece carregar um eco. Fragmentos de imagens, sons distorcidos, sensações fugazes. São memórias? Ou apenas a mente pregando peças? A linha entre o real e o imaginado começa a se borrar.",
+		"", "")
+
+	add_memory("memory_06", "A Desintegração da Sanidade",
+		"O tempo se torna um borrão. Dias e noites se misturam. A solidão e o confinamento corroem sua mente. Sussurros parecem vir das paredes, sombras se movem onde não há nada. A sanidade, um fio tênue, ameaça se romper. Você está perdendo o controle?",
+		"", "")
+
+	add_memory("memory_07", "Os Olhos na Escuridão",
+		"Você não está sozinho. Há algo mais aqui, na escuridão. Não é humano. Seus olhos brilham, observando. O medo paralisa. Você tenta se esconder, mas sabe que não há para onde ir. O que são essas criaturas? E o que elas querem?",
+		"", "")
+
+	add_memory("memory_08", "A Chave Interior",
+		"A fuga não é apenas física. É uma jornada para dentro de si mesmo. As ferramentas para escapar não são apenas objetos, mas as memórias que você precisa reconstruir. Sua identidade é a chave. Mas você está disposto a pagar o preço para se lembrar?",
+		"", "")
+
+	add_memory("memory_09", "Escolhas Amargas",
+		"A cada passo, uma decisão. Cada escolha tem um peso, uma consequência. Você se depara com dilemas morais que testam seus limites. A linha entre o certo e o errado se desfaz na luta pela sobrevivência. Você fará o que for preciso para viver?",
+		"", "")
+
+	add_memory("memory_10", "A Conspiração Silenciosa",
+		"A verdade se revela, fragmento por fragmento. Você não está aqui por acaso. Há uma razão, um propósito sombrio por trás do seu confinamento. Uma conspiração, um experimento, uma punição? O labirinto da sua mente se conecta a uma trama maior, mais sinistra do que você poderia imaginar.",
+		"", "")
+
+func add_memory(id: String, title: String, description: String, image_path: String, audio_path: String) -> void:
+	var new_memory = MemoryData.new()
+	new_memory.id = id
+	new_memory.title = title
+	new_memory.description = description
+	new_memory.image_path = image_path
+	new_memory.audio_path = audio_path
+	memories.append(new_memory)
+
+func unlock_memory(memory_id: String) -> void:
+	if not discovered_memories.has(memory_id):
 		discovered_memories.append(memory_id)
-		memory_unlocked.emit(memory)
-		
-		# Registrar no GameManager também
-		if game_manager:
-			game_manager.discover_memory(memory_id)
-		
-		print("Memória desbloqueada: ", memory.title)
-		return true
-	
-	return false
+		var unlocked_data = get_memory_data(memory_id)
+		if unlocked_data:
+			emit_signal("memory_unlocked", unlocked_data)
+			print("Memória desbloqueada: " + unlocked_data.title)
+	else:
+		print("Memória " + memory_id + " já foi desbloqueada.")
 
-func get_memory_by_id(id: String) -> MemoryData:
+func get_memory_data(memory_id: String) -> MemoryData:
 	for memory in memories:
-		if memory.id == id:
+		if memory.id == memory_id:
 			return memory
 	return null
-
-func get_memory_by_item_and_action(item_name: String, action: String) -> MemoryData:
-	for memory in memories:
-		if memory.associated_item_name == item_name and memory.triggered_by_action == action:
-			return memory
-	return null
-
-func trigger_memory_by_item(item_name: String, action: String) -> bool:
-	var memory = get_memory_by_item_and_action(item_name, action)
-	if memory and memory.id not in discovered_memories:
-		return discover_memory(memory.id)
-	return false
 
 func set_narrative_flag(flag_name: String, value: bool) -> void:
 	narrative_flags[flag_name] = value
-	narrative_event_triggered.emit(flag_name)
-	print("Narrative flag set: ", flag_name, " = ", value)
+	print("Flag narrativa \'" + flag_name + "\' definida para " + str(value))
 
 func get_narrative_flag(flag_name: String) -> bool:
 	return narrative_flags.get(flag_name, false)
 
-func get_discovered_memories() -> Array[MemoryData]:
-	var discovered: Array[MemoryData] = []
-	for memory in memories:
-		if memory.id in discovered_memories:
-			discovered.append(memory)
-	return discovered
-
-func get_memory_progress() -> float:
-	return float(discovered_memories.size()) / float(memories.size())
+func trigger_narrative_event(event_name: String) -> void:
+	emit_signal("narrative_event_triggered", event_name)
+	print("Evento narrativo acionado: " + event_name)
 
 func _on_memory_discovered(memory_id: String) -> void:
-	# Callback quando uma memória é descoberta via GameManager
-	var memory = get_memory_by_id(memory_id)
-	if memory:
-		print("NarrativeManager: Memória descoberta - ", memory.title)
-		
-		# Verificar se descobrir esta memória desbloqueia eventos narrativos
-		check_narrative_triggers(memory_id)
+	unlock_memory(memory_id)
 
-func check_narrative_triggers(memory_id: String) -> void:
-	# Verificar se certas combinações de memórias desbloqueiam eventos
-	match memory_id:
-		"memory_02":
-			set_narrative_flag("body_examined", true)
-		"memory_05":
-			if get_narrative_flag("body_examined"):
-				set_narrative_flag("voices_and_death_connected", true)
-				game_manager.display_message("As vozes parecem mais claras agora... elas falam sobre o corpo.")
-		"memory_09":
-			set_narrative_flag("identity_questioned", true)
-			if discovered_memories.size() >= 7:
-				set_narrative_flag("near_truth", true)
-				game_manager.display_message("Você está começando a entender a verdade sobre este lugar...")
-		"memory_10":
-			set_narrative_flag("truth_revealed", true)
-			game_manager.display_message("A verdade é mais terrível do que você imaginava...")
-
-func get_current_narrative_state() -> String:
-	var discovered_count = discovered_memories.size()
-	
-	if discovered_count == 0:
-		return "awakening"
-	elif discovered_count <= 3:
-		return "confusion"
-	elif discovered_count <= 6:
-		return "realization"
-	elif discovered_count <= 9:
-		return "horror"
-	else:
-		return "acceptance"
+func get_discovered_memories() -> Array[MemoryData]:
+	var unlocked_data_array: Array[MemoryData] = []
+	for mem_id in discovered_memories:
+		var data = get_memory_data(mem_id)
+		if data:
+			unlocked_data_array.append(data)
+	return unlocked_data_array
 
 func get_narrative_description() -> String:
-	match get_current_narrative_state():
-		"awakening":
-			return "Você acabou de despertar neste lugar sombrio. Tudo é confuso e assustador."
-		"confusion":
-			return "Fragmentos de memória começam a retornar, mas ainda não fazem sentido completo."
-		"realization":
-			return "As peças do quebra-cabeça começam a se encaixar. A verdade está próxima."
-		"horror":
-			return "Você está começando a entender o que realmente aconteceu. O horror se intensifica."
-		"acceptance":
-			return "A verdade foi revelada. Agora você deve decidir o que fazer com esse conhecimento."
-		_:
-			return "Estado narrativo desconhecido."
-
+	# Retorna uma descrição do estado narrativo atual com base nas memórias e flags
+	var description = ""
+	var unlocked_count = discovered_memories.size()
+	
+	if unlocked_count == 0:
+		description = "Você acorda em um porão escuro, sem memórias, com fome, medo e frio."
+	elif unlocked_count > 0 and unlocked_count < 5:
+		description = "Fragmentos de memórias começam a surgir. O ambiente é hostil e a sanidade está em jogo."
+	elif unlocked_count >= 5 and unlocked_count < 10:
+		description = "A verdade sobre sua identidade e o que te trouxe aqui começa a se revelar. O perigo espreita."
+	elif unlocked_count == 10:
+		description = "Todas as memórias foram recuperadas. A chave para escapar está em suas mãos, mas o preço pode ser alto."
+	
+	return description

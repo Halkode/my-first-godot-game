@@ -1,70 +1,55 @@
 class_name Item
-extends Node2D
+extends Area2D # Alterado para Area2D
 
 @export var item_name: String = "Item"
 @export var item_description: String = "Um item comum."
 @export var actions: Array[String] = ["Examinar", "Pegar"]
-@export var interaction_distance: float = 32.0
+@export var interaction_range_tiles: int = 1 # Distância de interação em tiles
 @export var auto_face_player: bool = true
 
 var tile_position: Vector2i
 var is_interactable: bool = true
 
-signal item_interacted(item: Item, player: Node2D)
+signal item_clicked(item_node: Node) # Sinal para o Player
 
 @onready var sprite: Sprite2D = $Sprite2D
-@onready var interaction_area: Area2D = $InteractionArea
-@onready var collision_shape: CollisionShape2D = $InteractionArea/CollisionShape2D
+@onready var collision_shape: CollisionShape2D = $CollisionShape2D # Caminho direto
 
 func _ready() -> void:
 	# Configurar área de interação
-	setup_interaction_area()
+	# A Area2D e CollisionShape2D já devem estar configuradas na cena
+	# Se não estiverem, adicione-as manualmente ou via código aqui.
 	
 	# Conectar sinal da área
-	if interaction_area:
-		interaction_area.input_event.connect(_on_area_input_event)
-
-func setup_interaction_area() -> void:
-	if not interaction_area:
-		interaction_area = Area2D.new()
-		add_child(interaction_area)
+	input_event.connect(_on_area_input_event)
 	
-	if not collision_shape:
-		collision_shape = CollisionShape2D.new()
-		var shape = RectangleShape2D.new()
-		shape.size = Vector2(32, 32)  # Ajuste conforme necessário
-		collision_shape.shape = shape
-		interaction_area.add_child(collision_shape)
+	# Adicionar ao grupo para que o ItemManager possa encontrá-los
+	add_to_group("interactive_items")
 
 func _on_area_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == MOUSE_BUTTON_LEFT:
-			request_interaction()
+			item_clicked.emit(self) # Emite o sinal para o Player
+			print("Item ", item_name, " clicked, emitting signal.")
 
-func request_interaction() -> void:
-	if not is_interactable:
-		return
-		
-	# Emitir sinal para o sistema de interação
-	item_interacted.emit(self, null)
-	print("Item ", item_name, " requesting interaction")
+func handle_action(action: String) -> void:
+	# Este método será chamado pelo ItemManager
+	# Itens específicos podem sobrescrever isso para ações personalizadas
+	match action:
+		"Examinar":
+			GameManager.display_message(item_name + ": " + item_description)
+			print("Examinando: ", item_name)
+		"Pegar":
+			# Lógica de pegar item (será tratada pelo ItemManager)
+			print("Tentando pegar: ", item_name)
+		_:
+			print("Ação desconhecida para ", item_name, ": ", action)
 
-func interact(player: Node2D) -> void:
-	print("Interacting with ", item_name)
-	# Override this method in specific items
-	show_interaction_menu(player)
-
-func show_interaction_menu(player: Node2D) -> void:
-	# Método base - override em itens específicos
-	print("No specific interaction defined for ", item_name)
-
-func get_interaction_position() -> Vector2:
-	# Retorna a posição onde o player deve ir para interagir
-	return global_position
-
-func set_tile_position(tilemap: TileMapLayer, tile_pos: Vector2i) -> void:
+func set_tile_position(tilemap: TileMap, tile_pos: Vector2i) -> void:
 	tile_position = tile_pos
 	global_position = tilemap.map_to_local(tile_pos)
 	print("Item ", item_name, " positioned at tile ", tile_pos, " world pos ", global_position)
-
-
+	
+func interact(player: Node2D) -> void:
+	# Método genérico de interação. Pode ser sobrescrito por itens específicos.
+	print("Interagindo com ", item_name)

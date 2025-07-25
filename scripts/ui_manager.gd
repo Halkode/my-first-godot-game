@@ -1,11 +1,9 @@
-class_name UIManager
 extends CanvasLayer
 
 signal inventory_toggled(is_open: bool)
 signal memory_journal_toggled(is_open: bool)
 
-@onready var game_manager: GameManager = get_node("/root/game_manager")
-@onready var narrative_manager: NarrativeManager = get_node("/root/main/NarrativeManager")
+# GameManager e NarrativeManager são autoloads e podem ser acessados diretamente
 
 # UI Elements
 @onready var health_bar: ProgressBar = $HUD/HealthBar
@@ -24,18 +22,13 @@ var is_inventory_open: bool = false
 var is_memory_journal_open: bool = false
 
 func _ready() -> void:
-	if not game_manager:
-		print("ERRO: GameManager não encontrado para o UIManager.")
-		return
-	
 	# Conectar sinais do GameManager
-	game_manager.sanity_changed.connect(_on_sanity_changed)
-	game_manager.hunger_changed.connect(_on_hunger_changed)
-	game_manager.fear_changed.connect(_on_fear_changed)
+	GameManager.sanity_changed.connect(_on_sanity_changed)
+	GameManager.hunger_changed.connect(_on_hunger_changed)
+	GameManager.fear_changed.connect(_on_fear_changed)
 	
 	# Conectar sinais do NarrativeManager
-	if narrative_manager:
-		narrative_manager.memory_unlocked.connect(_on_memory_unlocked)
+	NarrativeManager.memory_unlocked.connect(_on_memory_unlocked)
 	
 	# Configurar UI inicial
 	setup_ui()
@@ -56,39 +49,36 @@ func _input(event: InputEvent) -> void:
 func setup_ui() -> void:
 	# Configurar barras de status
 	if health_bar:
-		health_bar.max_value = game_manager.max_health if game_manager else 100
-		health_bar.value = game_manager.current_health if game_manager else 100
+		health_bar.max_value = GameManager.max_health
+		health_bar.value = GameManager.current_health
 	
 	if sanity_bar:
-		sanity_bar.max_value = game_manager.max_sanity if game_manager else 100
-		sanity_bar.value = game_manager.current_sanity if game_manager else 100
+		sanity_bar.max_value = GameManager.max_sanity
+		sanity_bar.value = GameManager.current_sanity
 	
 	if hunger_bar:
-		hunger_bar.max_value = game_manager.max_hunger if game_manager else 100
-		hunger_bar.value = game_manager.current_hunger if game_manager else 50
+		hunger_bar.max_value = GameManager.max_hunger
+		hunger_bar.value = GameManager.current_hunger
 	
 	if fear_bar:
-		fear_bar.max_value = game_manager.max_fear if game_manager else 100
-		fear_bar.value = game_manager.current_fear if game_manager else 20
+		fear_bar.max_value = GameManager.max_fear
+		fear_bar.value = GameManager.current_fear
 
 func update_all_bars() -> void:
-	if not game_manager:
-		return
-	
 	if health_bar:
-		health_bar.value = game_manager.current_health
+		health_bar.value = GameManager.current_health
 	if sanity_bar:
-		sanity_bar.value = game_manager.current_sanity
+		sanity_bar.value = GameManager.current_sanity
 	if hunger_bar:
-		hunger_bar.value = game_manager.current_hunger
+		hunger_bar.value = GameManager.current_hunger
 	if fear_bar:
-		fear_bar.value = game_manager.current_fear
+		fear_bar.value = GameManager.current_fear
 
 func _on_sanity_changed(new_value: float) -> void:
 	if sanity_bar:
 		sanity_bar.value = new_value
 	
-	# Efeitos visuais baseados na sanidade
+	# Efeitos baseados na sanidade
 	if new_value < 30:
 		# Efeito de tela tremendo ou distorcida
 		apply_low_sanity_effects()
@@ -159,7 +149,7 @@ func hide_inventory() -> void:
 		inventory_panel.hide()
 
 func update_inventory_display() -> void:
-	if not inventory_grid or not game_manager:
+	if not inventory_grid:
 		return
 	
 	# Limpar grid atual
@@ -167,7 +157,7 @@ func update_inventory_display() -> void:
 		child.queue_free()
 	
 	# Adicionar itens do inventário
-	var inventory = game_manager.get_inventory()
+	var inventory = GameManager.get_inventory()
 	for item in inventory:
 		var item_button = Button.new()
 		item_button.text = item.get("name", "Item")
@@ -194,7 +184,7 @@ func hide_memory_journal() -> void:
 		memory_journal_panel.hide()
 
 func update_memory_journal_display() -> void:
-	if not memory_list or not narrative_manager:
+	if not memory_list:
 		return
 	
 	# Limpar lista atual
@@ -202,7 +192,7 @@ func update_memory_journal_display() -> void:
 		child.queue_free()
 	
 	# Adicionar memórias descobertas
-	var discovered_memories = narrative_manager.get_discovered_memories()
+	var discovered_memories = NarrativeManager.get_discovered_memories()
 	for memory in discovered_memories:
 		var memory_container = VBoxContainer.new()
 		
@@ -212,7 +202,7 @@ func update_memory_journal_display() -> void:
 		memory_container.add_child(title_label)
 		
 		var text_label = Label.new()
-		text_label.text = memory.text
+		text_label.text = memory.description # Alterado de memory.text para memory.description
 		text_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		memory_container.add_child(text_label)
 		
@@ -247,7 +237,5 @@ func _on_memory_unlocked(memory_data: MemoryData) -> void:
 		update_memory_journal_display()
 
 func show_narrative_state() -> void:
-	if narrative_manager:
-		var state_description = narrative_manager.get_narrative_description()
-		display_message(state_description, 5.0)
-
+	var state_description = NarrativeManager.get_narrative_description()
+	display_message(state_description, 5.0)

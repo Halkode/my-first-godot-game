@@ -4,8 +4,8 @@ extends Node
 static func get_path_to_tile(
 	start_pos: Vector2,
 	target_pos: Vector2,
-	tilemap: TileMapLayer,
-	blocked_layer: TileMapLayer
+	tilemap: TileMap,
+	blocked_layer: TileMap
 ) -> PackedVector2Array:
 	print("Start pos (world): ", start_pos)
 	print("Target pos (world): ", target_pos)
@@ -23,8 +23,8 @@ static func get_path_to_tile(
 		return PackedVector2Array([])
 	
 	# Get all walkable tiles (excluding blocked tiles)
-	var all_tiles = tilemap.get_used_cells()
-	var blocked_tiles = blocked_layer.get_used_cells()
+	var all_tiles = tilemap.get_used_cells(0) # Assuming layer 0 for walkable tiles
+	var blocked_tiles = blocked_layer.get_used_cells(0) # Assuming layer 0 for blocked tiles
 	var walkable_tiles = all_tiles.filter(func(tile): return not blocked_tiles.has(tile))
 	print("Total tiles: ", all_tiles.size(), ", Blocked tiles: ", blocked_tiles.size(), ", Walkable tiles: ", walkable_tiles.size())
 	
@@ -45,6 +45,8 @@ static func get_path_to_tile(
 		for neighbor in _get_neighbors(tile):
 			if walkable_tiles.has(neighbor):
 				var neighbor_id = _get_point_id(neighbor)
+				if not astar.has_point(neighbor_id):
+					continue # Skip if neighbor is not a valid point in astar
 				if not astar.are_points_connected(point_id, neighbor_id):
 					astar.connect_points(point_id, neighbor_id)
 	

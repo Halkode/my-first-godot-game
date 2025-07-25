@@ -1,4 +1,3 @@
-class_name CraftingManager
 extends Node
 
 @export var recipes: Array[Resource] # Array de recursos de receita
@@ -30,16 +29,15 @@ func craft_item(recipe_name: String) -> bool:
 	var crafted_item_data = {"name": recipe_to_craft.crafted_item_name, "description": recipe_to_craft.crafted_item_description}
 	if game_manager.add_item_to_inventory(crafted_item_data):
 		game_manager.display_message("Você craftou: " + recipe_to_craft.crafted_item_name + "!")
-		game_manager.modify_sanity(5) # Pequeno boost de sanidade por craftar
+		game_manager.modify_sanity(5)
 		return true
 	else:
-		# Isso não deveria acontecer se o inventário for verificado antes, mas é um fallback
 		game_manager.display_message("Seu inventário está cheio! Não foi possível adicionar o item craftado.")
 		return false
 
-func get_recipe_by_name(name: String) -> Resource:
+func get_recipe_by_name(recipe_name: String) -> Resource:
 	for recipe in recipes:
-		if recipe is Recipe and recipe.recipe_name == name:
+		if recipe is Recipe and recipe.recipe_name == recipe_name:
 			return recipe
 	return null
 
@@ -68,5 +66,3 @@ func remove_recipe(recipe_name: String) -> void:
 	if recipe_to_remove:
 		recipes.erase(recipe_to_remove)
 		print("Receita removida: ", recipe_name)
-
-

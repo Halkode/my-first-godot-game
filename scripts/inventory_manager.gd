@@ -1,4 +1,3 @@
-class_name InventoryManager
 extends Node
 
 signal inventory_updated
@@ -55,14 +54,3 @@ func get_item_count(item_name: String) -> int:
 		if item.get("name") == item_name:
 			count += 1
 	return count
-
-func clear_inventory() -> void:
-	inventory_items.clear()
-	GameManager.inventory.clear() # Sincroniza com GameManager
-	inventory_updated.emit()
-	print("Inventário limpo.")
-
-func _on_item_picked(item_data: Dictionary) -> void:
-	add_item(item_data)
-
-

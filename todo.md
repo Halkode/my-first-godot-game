@@ -1,31 +1,44 @@
-# TODO - Desenvolvimento do Jogo Isométrico Darkwood-inspired
+# TODO - Jogo Isométrico Darkwood
 
-## Fase 3: Desenvolvimento da estrutura base do jogo
-- [x] Analisar código existente do repositório
-- [x] Criar sistema de iluminação dinâmica (cone de visão)
-- [x] Implementar sistema de sanidade/medo
-- [x] Criar sistema de inventário básico
-- [x] Implementar sistema de sons ambientes
-- [x] Criar sistema de save/load
-- [x] Implementar sistema de dia/noite
+## Fase 2: Correção dos erros de parse nos scripts ✅
 
-## Fase 4: Implementação das mecânicas de interação
-- [x] Expandir sistema de interação com objetos
-- [x] Implementar sistema de crafting básico
-- [x] Criar sistema de portas e chaves
-- [x] Implementar sistema de quebra-cabeças
-- [x] Adicionar sistema de combate básico
+- [x] Corrigir narrative_manager.gd - erro de parse
+- [x] Corrigir ui_manager.gd - erro de parse  
+- [x] Corrigir basement_scene.gd - erro de parse
+- [x] Corrigir main.gd - erro de parse
+- [x] Corrigir player.gd - erro de parse
+- [x] Resolver conflito "GameManager hides an autoload singleton"
+- [x] Ajustar caminhos dos nós no player.gd
+- [x] Remover class_name GameManager para evitar conflito
 
-## Fase 5: Integração dos assets e criação do cenário
-- [x] Integrar assets do porão/dungeon
-- [ ] Criar layout inicial do porão usando TileMaps e instanciar objetos interativos
+## Fase 3: Implementação da lógica de jogo e sistemas ✅
 
-## Fase 6: Implementação da narrativa e sistema de memórias
-- [x] Implementar narrativa e sistema de memórias
+- [x] Verificar e corrigir scripts de items (item_manager, containers, etc.)
+- [x] Implementar sistema de movimento com pathfinding
+- [x] Conectar sistemas de inventário e crafting
+- [x] Implementar sistema de iluminação
+- [x] Configurar sistema de áudio
+- [x] Testar interações entre sistemas
 
-## Fase 7: Preparação e entrega do código-fonte atualizado
-- [ ] Preparar o projeto para exportação
-- [ ] Criar um arquivo ZIP do projeto finalizado
-- [ ] Entregar o arquivo ZIP ao usuário
+## Fase 4: Desenvolvimento da narrativa e mecânicas de sobrevivência ✅
 
+- [x] Implementar sistema de memórias completo
+- [x] Criar eventos narrativos baseados na sinopse
+- [ ] Implementar mecânicas de fome, medo e sanidade
+- [ ] Criar sistema de escolhas morais
+- [ ] Adicionar elementos de horror psicológico
+
+## Fase 5: Teste e validação do jogo
+
+- [ ] Testar movimento do player
+- [ ] Testar sistema de inventário
+- [ ] Testar descoberta de memórias
+- [ ] Validar narrativa e progressão
+- [ ] Corrigir bugs encontrados
+
+## Fase 6: Entrega dos resultados ao usuário
+
+- [ ] Documentar mudanças realizadas
+- [ ] Criar guia de como jogar
+- [ ] Entregar projeto corrigido e funcional
 

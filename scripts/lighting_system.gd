@@ -2,7 +2,7 @@ class_name LightingSystem
 extends Node2D
 
 # Sistema de iluminação dinâmica inspirado no Darkwood
-signal visibility_changed(visible_area: Array)
+signal custom_visibility_changed(visible_area: Array)
 
 @export var base_visibility_radius: float = 100.0
 @export var max_visibility_radius: float = 200.0
@@ -11,7 +11,7 @@ signal visibility_changed(visible_area: Array)
 @export var global_light_intensity: float = 1.0 # Nova propriedade para luz global
 
 var player_node: Node2D
-var game_manager: GameManager
+# GameManager é um autoload e pode ser acessado diretamente
 var visibility_mask: Image
 var visibility_texture: ImageTexture
 
@@ -26,7 +26,7 @@ var darkness_material: ShaderMaterial
 func _ready() -> void:
 	# Encontrar referências
 	player_node = get_tree().get_first_node_in_group("player")
-	game_manager = get_tree().get_first_node_in_group("game_manager")
+	# GameManager é um autoload, não precisa ser obtido por get_node ou grupo
 	
 	# Configurar máscara de visibilidade
 	setup_visibility_mask()
@@ -35,9 +35,8 @@ func _ready() -> void:
 	setup_darkness_shader()
 	
 	# Conectar sinais do GameManager
-	if game_manager:
-		game_manager.fear_changed.connect(_on_fear_changed)
-		game_manager.sanity_changed.connect(_on_sanity_changed)
+	GameManager.fear_changed.connect(_on_fear_changed)
+	GameManager.sanity_changed.connect(_on_sanity_changed)
 
 func setup_visibility_mask() -> void:
 	var viewport_size = get_viewport().get_visible_rect().size
@@ -107,9 +106,9 @@ func update_visibility_around_player() -> void:
 func calculate_current_visibility_radius() -> float:
 	var base_radius = base_visibility_radius
 	
-	if game_manager and fear_affects_vision:
-		var fear_factor = game_manager.get_fear_percentage()
-		var sanity_factor = game_manager.get_sanity_percentage()
+	if fear_affects_vision:
+		var fear_factor = GameManager.get_fear_percentage()
+		var sanity_factor = GameManager.get_sanity_percentage()
 		
 		# Medo reduz visibilidade, sanidade baixa também
 		var vision_modifier = (1.0 - fear_factor * 0.5) * (0.5 + sanity_factor * 0.5)
@@ -145,9 +144,8 @@ func update_darkness_overlay() -> void:
 		
 		# Ajustar intensidade da escuridão baseada no medo
 		var darkness_intensity = 0.8
-		if game_manager:
-			var fear_factor = game_manager.get_fear_percentage()
-			darkness_intensity = 0.6 + (fear_factor * 0.3)
+		var fear_factor = GameManager.get_fear_percentage()
+		darkness_intensity = 0.6 + (fear_factor * 0.3)
 		
 		darkness_material.set_shader_parameter("darkness_intensity", darkness_intensity)
 
@@ -235,5 +233,3 @@ func get_darkness_material() -> ShaderMaterial:
 func set_global_light_intensity(intensity: float) -> void:
 	global_light_intensity = clamp(intensity, 0.0, 1.0)
 	print("Intensidade da luz global ajustada para: ", global_light_intensity)
-
-
