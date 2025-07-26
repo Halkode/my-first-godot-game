@@ -2,7 +2,7 @@ extends Node
 
 @export var recipes: Array[Resource] # Array de recursos de receita
 
-@onready var game_manager: GameManager = get_node("/root/game_manager")
+var game_manager := GameManager
 
 func _ready() -> void:
 	if not game_manager:

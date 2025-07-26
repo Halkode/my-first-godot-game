@@ -39,9 +39,9 @@ func check_death(entity: Node) -> void:
 			GameManager.modify_fear(-10) # Reduz medo ao derrotar inimigo
 			GameManager.modify_sanity(5) # Pequeno boost de sanidade
 
-func _on_entity_damaged(entity: Node, damage: float) -> void:
+func _on_entity_damaged(entity: Node, _damage: float) -> void:
 	check_death(entity)
 
-func _on_entity_died(entity: Node) -> void:
+func _on_entity_died(_entity: Node) -> void:
 	# Lógica adicional quando uma entidade morre
 	pass

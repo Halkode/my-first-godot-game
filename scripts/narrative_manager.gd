@@ -1,7 +1,6 @@
 extends Node
 signal memory_unlocked(memory_data: MemoryData)
 signal narrative_event_triggered(event_name: String)
-const MemoryData = preload("res://scripts/memory_data.gd")
 # GameManager é um autoload e pode ser acessado diretamente
 
 var memories: Array[MemoryData] = []

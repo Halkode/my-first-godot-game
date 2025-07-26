@@ -25,6 +25,7 @@ offset_bottom = 40.0
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
+alignment = 1
 
 [node name="MessageDisplay" type="Label" parent="."]
 layout_mode = 0

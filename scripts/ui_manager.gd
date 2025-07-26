@@ -129,8 +129,8 @@ func _on_sanity_changed(new_value: float) -> void:
 		apply_low_sanity_effects()
 	elif new_value < 60:
 		apply_medium_sanity_effects()
-	else:
-		clear_sanity_effects()
+	#else:
+		#clear_sanity_effects()
 
 func _on_hunger_changed(new_value: float) -> void:
 	if hunger_bar:
@@ -154,8 +154,8 @@ func apply_low_sanity_effects() -> void:
 func apply_medium_sanity_effects() -> void:
 	print("Aplicando efeitos médios de sanidade")
 
-func clear_sanity_effects() -> void:
-	print("Limpando efeitos de sanidade")
+#func clear_sanity_effects() -> void:
+	#print("Limpando efeitos de sanidade")
 
 func apply_high_fear_effects() -> void:
 	print("Aplicando efeitos de alto medo")

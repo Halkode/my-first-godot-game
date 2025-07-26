@@ -1,118 +1,94 @@
-class_name Table
-extends Item
+extends Area2D  # Mudei para Area2D para facilitar detecção
 
-var interaction_menu: Control
-var menu_options: Array[String] = [
-	"Examinar Mesa",
-	"Pegar Objeto",
-	"Usar Mesa",
-	"Cancelar"
-]
+var item_name: String = "Mesa"
+var item_description: String = "Uma mesa de madeira robusta com alguns objetos sobre ela."
+var actions: Array[String] = ["Examinar", "Pegar Objeto", "Usar Mesa"]
+var interaction_range_tiles: int = 1  # Range de interação em tiles
 
 func _ready() -> void:
-	super._ready()
-	item_name = "Mesa"
-	create_interaction_menu()
+	# Certificar que está no grupo correto
+	add_to_group("items")
+	
+	# Conectar sinal de input se necessário (backup)
+	if not input_event.is_connected(_on_input_event):
+		input_event.connect(_on_input_event)
 
-func create_interaction_menu() -> void:
-	# Criar menu de interação
-	interaction_menu = Control.new()
-	interaction_menu.name = "InteractionMenu"
-	
-	# Panel de fundo
-	var panel = Panel.new()
-	panel.size = Vector2(200, 150)
-	panel.position = Vector2(-100, -200)  # Posicionar acima do item
-	interaction_menu.add_child(panel)
-	
-	# Container vertical para os botões
-	var vbox = VBoxContainer.new()
-	vbox.position = Vector2(10, 10)
-	vbox.size = Vector2(180, 130)
-	panel.add_child(vbox)
-	
-	# Título
-	var title = Label.new()
-	title.text = item_name
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	vbox.add_child(title)
-	
-	# Criar botões para cada opção
-	for i in range(menu_options.size()):
-		var button = Button.new()
-		button.text = menu_options[i]
-		button.custom_minimum_size = Vector2(160, 25)
-		button.pressed.connect(_on_menu_option_selected.bind(i))
-		vbox.add_child(button)
-	
-	# Adicionar à cena mas manter invisível
-	add_child(interaction_menu)
-	interaction_menu.visible = false
-
+# Método principal chamado pelo Player
 func interact(player: Node2D) -> void:
-	show_interaction_menu(player)
+	print("Table interact called by player")
+	if ItemManager:
+		ItemManager.show_item_menu(self, global_position)
+	else:
+		print("ItemManager não encontrado!")
 
-func show_interaction_menu(player: Node2D) -> void:
-	if not interaction_menu:
-		create_interaction_menu()
-	
-	interaction_menu.visible = true
-	print("Showing interaction menu for ", item_name)
-	
-	# Pausar o jogo ou impedir outras interações
-	get_tree().paused = true
+# Backup: sinal direto do Area2D (caso o Player não detecte)
+func _on_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		print("Table clicked directly via Area2D signal")
+		var player = get_tree().get_first_node_in_group("player")
+		if player and player.has_method("on_item_clicked"):
+			player.on_item_clicked(self)
 
-func _on_menu_option_selected(option_index: int) -> void:
-	hide_interaction_menu()
-	
-	match option_index:
-		0:  # Examinar Mesa
+# Métodos para o ItemManager obter informações
+func get_item_name() -> String:
+	return item_name
+
+func get_item_description() -> String:
+	return item_description
+
+func get_actions() -> Array:
+	return actions
+
+# Método para lidar com as ações selecionadas no menu
+func handle_action(action: String) -> void:
+	print("Table handling action: ", action)
+	match action:
+		"Examinar":
 			examine_table()
-		1:  # Pegar Objeto
+		"Pegar Objeto":
 			take_object()
-		2:  # Usar Mesa
+		"Usar Mesa":
 			use_table()
-		3:  # Cancelar
-			print("Interação cancelada")
-
-func hide_interaction_menu() -> void:
-	if interaction_menu:
-		interaction_menu.visible = false
-	get_tree().paused = false
+		_:
+			print("Ação não reconhecida: ", action)
 
 func examine_table() -> void:
 	print("Você examina a mesa. É uma mesa de madeira robusta.")
-	show_message("É uma mesa de madeira bem conservada. Há alguns objetos sobre ela.")
+	if ItemManager:
+		ItemManager.display_message("É uma mesa de madeira bem conservada. Há alguns objetos sobre ela.")
 
 func take_object() -> void:
 	print("Você pega um objeto da mesa")
-	show_message("Você pegou uma chave antiga da mesa!")
+	
+	# Criar dados do item para o inventário
+	var item_data = {
+		"name": "Chave Antiga",
+		"description": "Uma chave enferrujada que parece muito antiga. Para que será?"
+	}
+	
+	# Verificar se GameManager existe e adicionar ao inventário
+	if GameManager and GameManager.has_method("add_item_to_inventory"):
+		if GameManager.add_item_to_inventory(item_data):
+			if ItemManager:
+				ItemManager.display_message("Você pegou uma chave antiga da mesa!")
+			# Remover esta ação das opções disponíveis
+			if "Pegar Objeto" in actions:
+				actions.erase("Pegar Objeto")
+		else:
+			if ItemManager:
+				ItemManager.display_message("Inventário cheio! Não foi possível pegar o objeto.")
+	else:
+		if ItemManager:
+			ItemManager.display_message("Você pegou uma chave antiga da mesa!")
+		# Mesmo sem GameManager, remover a ação
+		if "Pegar Objeto" in actions:
+			actions.erase("Pegar Objeto")
 
 func use_table() -> void:
 	print("Você usa a mesa")
-	show_message("Você se senta à mesa e descansa um pouco.")
-
-func show_message(text: String) -> void:
-	# Criar uma mensagem temporária
-	var message_label = Label.new()
-	message_label.text = text
-	message_label.position = Vector2(-100, -250)
-	message_label.size = Vector2(200, 50)
-	message_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	message_label.add_theme_color_override("font_color", Color.WHITE)
+	if ItemManager:
+		ItemManager.display_message("Você se senta à mesa e descansa um pouco. Sua sanidade aumenta ligeiramente.")
 	
-	# Adicionar fundo
-	var message_panel = Panel.new()
-	message_panel.position = Vector2(-100, -250)
-	message_panel.size = Vector2(200, 50)
-	message_panel.add_child(message_label)
-	
-	add_child(message_panel)
-	
-	# Remover após 3 segundos
-	var timer = Timer.new()
-	timer.wait_time = 3.0
-	timer.one_shot = true
-	timer.timeout.connect(message_panel.queue_free)
-	add_child(timer)
-	timer.start()
+	# Restaurar sanidade se GameManager existir
+	if GameManager and GameManager.has_method("modify_sanity"):
+		GameManager.modify_sanity(5)

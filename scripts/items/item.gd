@@ -50,6 +50,6 @@ func set_tile_position(tilemap: TileMap, tile_pos: Vector2i) -> void:
 	global_position = tilemap.map_to_local(tile_pos)
 	print("Item ", item_name, " positioned at tile ", tile_pos, " world pos ", global_position)
 	
-func interact(player: Node2D) -> void:
+func interact(_player: Node2D) -> void:
 	# Método genérico de interação. Pode ser sobrescrito por itens específicos.
 	print("Interagindo com ", item_name)

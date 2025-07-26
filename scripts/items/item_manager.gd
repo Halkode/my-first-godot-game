@@ -1,39 +1,114 @@
-# ItemManager.gd
 extends Node
 
-# Usando get_node_or_null para evitar erros quando os nós não existem
-@onready var item_menu: Control = get_node_or_null("ItemMenu")
-@onready var message_display: Label = get_node_or_null("MessageDisplay")
+# Tentar encontrar os nós em diferentes locais possíveis
+@onready var item_menu: Control = _find_item_menu()
+@onready var message_display: Label = _find_message_display()
 
-var current_item_interacting: Node = null # O item que está atualmente com o menu aberto
+var current_item_interacting: Node = null
 
 func _ready() -> void:
-	# Verificar se o item_menu existe antes de tentar escondê-lo
+	print("ItemManager ready - Checking UI nodes...")
+	
 	if item_menu:
 		item_menu.hide()
+		print("ItemMenu found at: ", item_menu.get_path())
 	else:
-		print("Warning: ItemMenu node not found at ../UIManager/ItemMenu")
+		print("Warning: ItemMenu not found - creating temporary menu")
+		_create_temporary_menu()
 	
-	# Verificar se message_display existe
-	if not message_display:
-		print("Warning: MessageDisplay node not found at ../UIManager/HUD/MessageDisplay")
+	if message_display:
+		print("MessageDisplay found at: ", message_display.get_path())
+	else:
+		print("Warning: MessageDisplay not found")
+
+func _find_item_menu() -> Control:
+	# Tentar diferentes caminhos possíveis
+	var possible_paths = [
+		"ItemMenu",
+		"../ItemMenu", 
+		"../UIManager/ItemMenu",
+		"../ui/ItemMenu",
+		"../UI/ItemMenu"
+	]
+	
+	for path in possible_paths:
+		var node = get_node_or_null(path)
+		if node:
+			print("Found ItemMenu at: ", path)
+			return node
+	
+	return null
+
+func _find_message_display() -> Label:
+	# Tentar diferentes caminhos possíveis
+	var possible_paths = [
+		"MessageDisplay",
+		"../MessageDisplay",
+		"../UIManager/MessageDisplay",
+		"../UIManager/HUD/MessageDisplay",
+		"../ui/MessageDisplay",
+		"../UI/MessageDisplay"
+	]
+	
+	for path in possible_paths:
+		var node = get_node_or_null(path)
+		if node:
+			print("Found MessageDisplay at: ", path)
+			return node
+	
+	return null
+
+func _create_temporary_menu() -> void:
+	# Criar um menu temporário se não encontrar
+	item_menu = Control.new()
+	item_menu.name = "TempItemMenu"
+	item_menu.size = Vector2(200, 200)
+	
+	var panel = Panel.new()
+	panel.size = Vector2(200, 200)
+	item_menu.add_child(panel)
+	
+	var vbox = VBoxContainer.new()
+	vbox.name = "VBoxContainer"
+	vbox.position = Vector2(10, 10)
+	vbox.size = Vector2(180, 180)
+	panel.add_child(vbox)
+	
+	# Adicionar à cena principal
+	get_tree().current_scene.add_child(item_menu)
+	item_menu.hide()
+	print("Created temporary ItemMenu")
 
 func show_item_menu(item_node: Node, display_position: Vector2) -> void:
 	if not item_menu:
 		print("Error: Cannot show item menu - item_menu node not found")
-		return
+		_create_temporary_menu()
+		if not item_menu:
+			return
 
 	current_item_interacting = item_node
+	print("Showing menu for: ", item_node.name)
 
 	# Verificar se o VBoxContainer existe dentro do item_menu
 	var vbox_container = item_menu.get_node_or_null("VBoxContainer")
 	if not vbox_container:
-		print("Error: VBoxContainer not found inside ItemMenu")
-		return
+		# Tentar encontrar em panel
+		var panel = item_menu.get_node_or_null("Panel")
+		if panel:
+			vbox_container = panel.get_node_or_null("VBoxContainer")
+		
+		if not vbox_container:
+			print("Error: VBoxContainer not found, creating one")
+			vbox_container = VBoxContainer.new()
+			vbox_container.name = "VBoxContainer"
+			item_menu.add_child(vbox_container)
 
 	# Limpa as opções anteriores
 	for child in vbox_container.get_children():
 		child.queue_free()
+
+	# Aguardar um frame para que os nós sejam removidos
+	await get_tree().process_frame
 
 	# Adiciona o título do item
 	var item_name_label = Label.new()
@@ -78,6 +153,7 @@ func show_item_menu(item_node: Node, display_position: Vector2) -> void:
 	# Posiciona o menu
 	position_menu(display_position)
 	item_menu.show()
+	print("Menu shown successfully")
 
 func position_menu(display_position: Vector2) -> void:
 	if not item_menu:
@@ -103,6 +179,7 @@ func hide_item_menu() -> void:
 	if item_menu:
 		item_menu.hide()
 		current_item_interacting = null
+		print("Menu hidden")
 
 func is_menu_visible() -> bool:
 	return item_menu and item_menu.visible
@@ -115,22 +192,19 @@ func is_click_inside_menu(click_global_pos: Vector2) -> bool:
 func _on_menu_option_selected(action: String, item: Node) -> void:
 	var item_name = get_item_name(item)
 	print("Action selected for ", item_name, ": ", action)
-	hide_item_menu() # Esconde o menu após a seleção
+	hide_item_menu()
 	
-	# Delega a ação para o próprio item, se ele tiver o método handle_action
 	if item.has_method("handle_action"):
 		item.handle_action(action)
 	else:
-		# Fallback para ações genéricas se o item não tiver um handler específico
 		match action:
 			"Pegar":
 				_handle_pick_item(item)
 			"Examinar":
 				_handle_examine_item(item)
 			_:
-				print("Ação desconhecida ou não tratada pelo item: ", action)
+				print("Ação desconhecida: ", action)
 
-# --- Helpers para obter informações do item de forma segura ---
 func get_item_name(item: Node) -> String:
 	if item.has_method("get_item_name"):
 		return item.get_item_name()
@@ -153,9 +227,8 @@ func get_item_actions(item: Node) -> Array:
 	elif "actions" in item:
 		return item.actions
 	else:
-		return ["Examinar"] # Fallback padrão
+		return ["Examinar"]
 
-# --- Handlers de Ação Genéricos (para itens que não têm handle_action) ---
 func _handle_pick_item(item: Node) -> void:
 	var item_name = get_item_name(item)
 	var item_description = get_item_description(item)
@@ -163,23 +236,15 @@ func _handle_pick_item(item: Node) -> void:
 	print("Pegou o item: ", item_name)
 	var item_data = {"name": item_name, "description": item_description}
 	
-	# Verificar se GameManager existe e tem o método necessário
-	if not GameManager:
-		print("Error: GameManager not found")
-		display_message("Erro: Sistema de inventário não disponível.")
-		return
-	
-	if not GameManager.has_method("add_item_to_inventory"):
-		print("Error: GameManager.add_item_to_inventory() method not found")
-		display_message("Erro: Método de adicionar item não encontrado.")
-		return
-	
-	if GameManager.add_item_to_inventory(item_data):
-		if item is Area2D or item is RigidBody2D or item is CharacterBody2D:
-			item.queue_free() # Remove o item do mundo
-		display_message(item_name + " foi adicionado ao seu inventário.")
+	if GameManager and GameManager.has_method("add_item_to_inventory"):
+		if GameManager.add_item_to_inventory(item_data):
+			if item is Area2D or item is RigidBody2D or item is CharacterBody2D:
+				item.queue_free()
+			display_message(item_name + " foi adicionado ao seu inventário.")
+		else:
+			display_message("Inventário cheio! Não foi possível adicionar " + item_name + ".")
 	else:
-		display_message("Inventário cheio! Não foi possível adicionar " + item_name + ".")
+		display_message("Pegou: " + item_name)
 
 func _handle_examine_item(item: Node) -> void:
 	var item_name = get_item_name(item)
@@ -188,25 +253,38 @@ func _handle_examine_item(item: Node) -> void:
 	print("Examinando: ", item_name, " - ", item_description)
 	display_message(item_name + ": " + item_description)
 
-# Função para exibir mensagens temporárias na tela (usando UIManager)
 func display_message(message: String) -> void:
-	# Primeiro tentar usar o message_display do UIManager
+	print("Message: ", message)
+	
 	if message_display:
 		_display_message_with_label(message)
-	# Se não existir, tentar usar o UIManager diretamente
 	elif has_node("../UIManager") and get_node("../UIManager").has_method("display_message"):
 		get_node("../UIManager").display_message(message)
-	# Como último recurso, apenas imprimir no console
 	else:
-		print("Message: ", message)
+		# Criar mensagem temporária na tela
+		_create_temporary_message(message)
 
 func _display_message_with_label(message: String) -> void:
 	message_display.text = message
 	message_display.show()
 	
-	# Criar tween para fade out
 	var tween = create_tween()
-	tween.tween_delay(3.0) # Duração da mensagem
+	tween.tween_delay(3.0)
 	tween.tween_property(message_display, "modulate:a", 0.0, 0.5)
 	tween.tween_callback(func(): message_display.hide())
 	tween.tween_callback(func(): message_display.modulate.a = 1.0)
+
+func _create_temporary_message(message: String) -> void:
+	var temp_label = Label.new()
+	temp_label.text = message
+	temp_label.position = Vector2(50, 50)
+	temp_label.add_theme_color_override("font_color", Color.WHITE)
+	
+	get_tree().current_scene.add_child(temp_label)
+	
+	var timer = Timer.new()
+	timer.wait_time = 3.0
+	timer.one_shot = true
+	timer.timeout.connect(temp_label.queue_free)
+	get_tree().current_scene.add_child(timer)
+	timer.start()
