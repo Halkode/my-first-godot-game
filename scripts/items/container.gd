@@ -1,4 +1,3 @@
-class_name Container
 extends Item
 
 @export var is_locked: bool = false
@@ -202,5 +201,3 @@ func populate_with_random_items() -> void:
 		if container_items.size() < max_items:
 			var random_item = possible_items[randi() % possible_items.size()]
 			add_item_to_container(random_item)
-
-

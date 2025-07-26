@@ -1,162 +1,19 @@
-[gd_scene load_steps=6 format=3 uid="uid://2wacm2cbuaxi"]
+[gd_scene load_steps=3 format=3 uid="uid://do4yafe14qpa3"]
 
-[ext_resource type="Script" uid="uid://bxadcnt0q85of" path="res://scripts/main.gd" id="1_3lgf1"]
-[ext_resource type="PackedScene" uid="uid://bllke6nby7koo" path="res://scenes/tilemaps.tscn" id="1_uvjg0"]
-[ext_resource type="PackedScene" uid="uid://copmddbeoxptn" path="res://scenes/player.tscn" id="3_506sy"]
-[ext_resource type="Script" uid="uid://b26w3mfriq68j" path="res://scripts/items/item_manager.gd" id="4_jyhfs"]
-[ext_resource type="Script" path="res://scripts/lighting_system.gd" id="5_abcde"]
+[ext_resource type="Script" uid="uid://bxadcnt0q85of" path="res://scripts/main.gd" id="1_elqb8"]
+[ext_resource type="PackedScene" uid="uid://dew7xdeorjr5w" path="res://scenes/UI.tscn" id="2_rvslj"]
 
-[node name="main" type="Node2D"]
-script = ExtResource("1_3lgf1")
+[node name="Main" type="Node2D"]
 
-[node name="TileMaps" parent="." instance=ExtResource("1_uvjg0")]
+[node name="Node2D" type="Node2D" parent="."]
+position = Vector2(16, 5)
+script = ExtResource("1_elqb8")
 
-[node name="Player" parent="TileMaps" instance=ExtResource("3_506sy")]
-z_index = 1
-y_sort_enabled = true
-scale = Vector2(0.1, 0.1)
-move_speed = null
-arrival_threshold = null
+[node name="ui" parent="." instance=ExtResource("2_rvslj")]
 
-[node name="Camera2D" type="Camera2D" parent="TileMaps"]
-position = Vector2(0, 7)
-zoom = Vector2(5, 5)
+[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+position = Vector2(14, 18)
 
-[node name="DayNightCycle" type="Node" parent="."]
-script = preload("res://scripts/day_night_cycle.gd")
+[node name="TileMapLayer" type="TileMapLayer" parent="."]
 
-[node name="LightingSystem" type="Node2D" parent="."]
-script = preload("res://scripts/lighting_system.gd")
-
-[node name="NarrativeManager" type="Node" parent="."]
-script = preload("res://scripts/narrative_manager.gd")
-
-[node name="UIManager" type="CanvasLayer" parent="."]
-script = preload("res://scripts/ui_manager.gd")
-
-[node name="HUD" type="Control" parent="UIManager"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="HealthBar" type="ProgressBar" parent="UIManager/HUD"]
-layout_mode = 0
-offset_left = 10.0
-offset_top = 10.0
-offset_right = 210.0
-offset_bottom = 30.0
-
-[node name="SanityBar" type="ProgressBar" parent="UIManager/HUD"]
-layout_mode = 0
-offset_left = 10.0
-offset_top = 40.0
-offset_right = 210.0
-offset_bottom = 60.0
-
-[node name="HungerBar" type="ProgressBar" parent="UIManager/HUD"]
-layout_mode = 0
-offset_left = 10.0
-offset_top = 70.0
-offset_right = 210.0
-offset_bottom = 90.0
-
-[node name="FearBar" type="ProgressBar" parent="UIManager/HUD"]
-layout_mode = 0
-offset_left = 10.0
-offset_top = 100.0
-offset_right = 210.0
-offset_bottom = 120.0
-
-[node name="MessageDisplay" type="Label" parent="UIManager/HUD"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-grow_horizontal = 2
-text = "Message Display"
-
-[node name="InventoryPanel" type="Panel" parent="UIManager"]
-visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UIManager/InventoryPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Label" type="Label" parent="UIManager/InventoryPanel/VBoxContainer"]
-layout_mode = 2
-text = "Inventário"
-
-[node name="InventoryGrid" type="GridContainer" parent="UIManager/InventoryPanel/VBoxContainer"]
-layout_mode = 2
-columns = 4
-
-[node name="MemoryJournalPanel" type="Panel" parent="UIManager"]
-visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UIManager/MemoryJournalPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Label" type="Label" parent="UIManager/MemoryJournalPanel/VBoxContainer"]
-layout_mode = 2
-text = "Diário de Memórias"
-
-[node name="MemoryList" type="VBoxContainer" parent="UIManager/MemoryJournalPanel/VBoxContainer"]
-layout_mode = 2
-
-[node name="ItemMenu" type="Panel" parent="UIManager"]
-visible = false
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -75.0
-offset_top = -100.0
-offset_right = 75.0
-offset_bottom = 0.0
-grow_horizontal = 2
-grow_vertical = 0
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UIManager/ItemMenu"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-
-
-
-
-
-
+[node name="Camera2D" type="Camera2D" parent="."]

@@ -55,7 +55,7 @@ uniform float darkness_intensity : hint_range(0.0, 1.0) = 0.8;
 uniform vec2 light_position;
 uniform float light_radius = 100.0;
 uniform sampler2D visibility_mask;
-uniform float global_light_multiplier = 1.0; // Novo uniforme para luz global
+uniform float global_light_multiplier = 1.0;
 
 void fragment() {
 	vec2 screen_pos = SCREEN_UV;

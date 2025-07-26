@@ -23,13 +23,13 @@ func spawn_initial_items() -> void:
 	# Spawnar itens iniciais no porão
 	print("Spawning initial items...")
 	
-	var chest_scene = preload("res://scenes/items/Chest.tscn")
+	var ChestScene = preload("res://scenes/items/Chest.tscn")
 	var door_scene = preload("res://scenes/items/Door.tscn")
 	var memory_trigger_scene = preload("res://scenes/items/MemoryTrigger.tscn")
 	
 	# Item 1: Baú com itens iniciais
-	if chest_scene:
-		ItemManager.add_item_to_tilemap(chest_scene, Vector2i(5, 3), {"item_name": "Baú Velho", "item_description": "Um baú empoeirado que pode conter algo útil.", "is_locked": false, "container_items": [{"name": "Vela", "description": "Uma vela que pode fornecer luz."}, {"name": "Fósforos", "description": "Uma caixa de fósforos quase vazia."}]})
+	if ChestScene:
+		ItemManager.add_item_to_tilemap(ChestScene, Vector2i(5, 3), {"item_name": "Baú Velho", "item_description": "Um baú empoeirado que pode conter algo útil.", "is_locked": false, "container_items": [{"name": "Vela", "description": "Uma vela que pode fornecer luz."}, {"name": "Fósforos", "description": "Uma caixa de fósforos quase vazia."}]})
 	
 	# Item 2: Porta trancada (requer chave)
 	if door_scene:
@@ -77,5 +77,3 @@ func spawn_initial_items() -> void:
 
 func get_player_spawn_position() -> Vector2:
 	return player_spawn.global_position
-
-

@@ -53,6 +53,6 @@ func setup_items() -> void:
 	if table3:
 		print("Mesa 3 adicionada com sucesso na posição (3, 7)")
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	# Você pode adicionar lógica de jogo aqui se necessário
 	pass
