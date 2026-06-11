@@ -26,6 +26,7 @@ CraftingManager="*res://scripts/crafting_manager.gd"
 CombatSystem="*res://scripts/combat_system.gd"
 NarrativeManager="*res://scripts/narrative_manager.gd"
 UIManager="*res://scripts/ui_manager.gd"
+HealthManager="*res://scripts/health/health_manager.gd"
 
 [display]
 
