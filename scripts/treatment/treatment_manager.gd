@@ -1,24 +1,29 @@
 extends Node
 
 ## Autoload que orquestra o fluxo de tratamento de ferimentos:
-## abre a tela de tratamento, aplica o item escolhido e repassa o
-## resultado ao HealthManager.
-##
-## A partir do Sprint 3 a "quality" virá de um minigame por tipo de
-## ferimento. Por ora usamos um valor fixo (aplicação "sem treino").
+## abre a tela de tratamento, dispara o minigame correspondente ao
+## item escolhido e repassa o resultado ao HealthManager.
 
 signal treatment_screen_opened
 signal treatment_screen_closed
 signal treatment_completed(part: BodyPart, injury: Injury, quality: float)
 
+## Qualidade usada para itens que ainda não têm minigame próprio.
 const PLACEHOLDER_QUALITY: float = 0.6
 
 ## Itens de inventário (por nome) aceitos para tratar ferimentos.
-## TODO(Sprint 3+): mapear item -> minigame específico.
+## "Bandagem" usa o minigame de enrolar; demais usam qualidade fixa
+## até ganharem seu próprio minigame (limpeza, sutura, tala, queimadura).
 const TREATMENT_ITEMS := ["Bandagem", "Gaze"]
+const MINIGAME_ITEMS := ["Bandagem"]
 
 var _screen: Control
+var _bandage_minigame: Control
 var is_open: bool = false
+
+var _pending_part: BodyPart
+var _pending_injury: Injury
+var _pending_item_name: String
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -66,8 +71,8 @@ func get_available_treatment_items() -> Array[String]:
 			available.append(item_name)
 	return available
 
-## Aplica o tratamento de um item a um ferimento específico.
-## Consome o item do inventário e marca o ferimento como tratado.
+## Inicia o tratamento de um item a um ferimento específico.
+## Para itens com minigame, abre o minigame antes de concluir.
 func apply_treatment(part: BodyPart, injury: Injury, item_name: String) -> void:
 	if not TREATMENT_ITEMS.has(item_name):
 		push_warning("TreatmentManager: item '%s' não é um item de tratamento." % item_name)
@@ -77,9 +82,42 @@ func apply_treatment(part: BodyPart, injury: Injury, item_name: String) -> void:
 			UIManager.display_message("Você não tem %s." % item_name)
 		return
 
+	if MINIGAME_ITEMS.has(item_name):
+		_start_minigame(part, injury, item_name)
+	else:
+		_finish_treatment(part, injury, item_name, PLACEHOLDER_QUALITY)
+
+func _start_minigame(part: BodyPart, injury: Injury, item_name: String) -> void:
+	_pending_part = part
+	_pending_injury = injury
+	_pending_item_name = item_name
+
+	match item_name:
+		"Bandagem":
+			if not _bandage_minigame:
+				var BandageMinigameScene = load("res://scripts/treatment/minigames/bandage_minigame.gd")
+				_bandage_minigame = BandageMinigameScene.new()
+				get_tree().root.add_child(_bandage_minigame)
+				_bandage_minigame.minigame_completed.connect(_on_minigame_completed)
+			_screen.hide()
+			_bandage_minigame.reset()
+			_bandage_minigame.show()
+
+func _on_minigame_completed(quality: float) -> void:
+	if _bandage_minigame:
+		_bandage_minigame.hide()
+	if _screen and is_open:
+		_screen.show()
+
+	_finish_treatment(_pending_part, _pending_injury, _pending_item_name, quality)
+
+	_pending_part = null
+	_pending_injury = null
+	_pending_item_name = ""
+
+func _finish_treatment(part: BodyPart, injury: Injury, item_name: String, quality: float) -> void:
 	InventoryManager.remove_item(item_name)
 
-	var quality := PLACEHOLDER_QUALITY
 	injury.treated = true
 	injury.treatment_quality = quality
 
@@ -91,3 +129,6 @@ func apply_treatment(part: BodyPart, injury: Injury, item_name: String) -> void:
 		UIManager.display_message("%s tratado em %s (qualidade %d%%)." % [
 			injury.get_type_name(), part.get_part_name(), roundi(quality * 100)
 		])
+
+	if _screen and is_open:
+		_screen.refresh()
