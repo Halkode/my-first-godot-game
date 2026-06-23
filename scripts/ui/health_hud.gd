@@ -80,3 +80,5 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		if event.keycode == KEY_F1:
 			var injury := Injury.create(Injury.Type.CUT_DEEP, 0.7)
 			HealthManager.add_injury(BodyPart.Id.ARM_RIGHT, injury)
+		elif event.keycode == KEY_F2:
+			InventoryManager.add_item({"name": "Bandagem", "description": "Usada para estancar sangramentos."})
