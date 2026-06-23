@@ -109,6 +109,6 @@ func _rebuild_injury_panel() -> void:
 			row.add_child(treat_button)
 
 func _on_treat_pressed(part: BodyPart, injury: Injury, item_name: String) -> void:
+	## A UI é reconstruída pelo TreatmentManager via refresh() quando o
+	## tratamento (e o minigame, se houver) for concluído.
 	TreatmentManager.apply_treatment(part, injury, item_name)
-	_rebuild_body_part_list()
-	_rebuild_injury_panel()
