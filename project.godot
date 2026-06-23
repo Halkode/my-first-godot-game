@@ -26,6 +26,8 @@ CraftingManager="*res://scripts/crafting_manager.gd"
 CombatSystem="*res://scripts/combat_system.gd"
 NarrativeManager="*res://scripts/narrative_manager.gd"
 UIManager="*res://scripts/ui_manager.gd"
+HealthManager="*res://scripts/health/health_manager.gd"
+TreatmentManager="*res://scripts/treatment/treatment_manager.gd"
 
 [display]
 
@@ -55,6 +57,19 @@ toggle_memory_journal={
 "keycode": 74,
 "modifers": [],
 "physical_keycode": 74,
+"pressed": false,
+"type": "InputEventKey",
+"unicode": 0,
+"window_id": 0
+}]
+}
+toggle_treatment_screen={
+"deadzone": 0.5,
+"events": [{
+"device": 0,
+"keycode": 84,
+"modifers": [],
+"physical_keycode": 84,
 "pressed": false,
 "type": "InputEventKey",
 "unicode": 0,

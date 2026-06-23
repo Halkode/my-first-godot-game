@@ -26,6 +26,11 @@ func _ready() -> void:
 
 	current_health = max_health
 
+	if HealthManager:
+		HealthManager.max_health = max_health
+		HealthManager.current_health = max_health
+		HealthManager.player_died.connect(_on_player_died)
+
 func _unhandled_input(event: InputEvent) -> void:
 	if ItemManager and ItemManager.is_menu_visible():
 		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
@@ -95,8 +100,12 @@ func _physics_process(delta: float) -> void:
 		global_position = target_position
 		_advance_to_next_target()
 	else:
+		# Dor reduz a velocidade de movimento (ver HealthManager)
+		var effective_speed = move_speed
+		if HealthManager:
+			effective_speed *= HealthManager.get_speed_multiplier()
 		var direction = (target_position - global_position).normalized()
-		var movement = direction * move_speed * delta
+		var movement = direction * effective_speed * delta
 		if movement.length() > distance_to_target:
 			movement = direction * distance_to_target
 		global_position += movement
@@ -257,18 +266,25 @@ func perform_attack(target: Node) -> void:
 		print("Inimigo fora do alcance de ataque.")
 
 func take_damage(amount: float) -> void:
-	current_health -= amount
-	current_health = clamp(current_health, 0, max_health)
+	if HealthManager:
+		HealthManager.modify_health(-amount)
+		current_health = HealthManager.current_health
+	else:
+		current_health = clamp(current_health - amount, 0, max_health)
 	print("Player recebeu ", amount, " de dano. Saúde atual: ", current_health)
 	GameManager.modify_sanity(-5)
 	GameManager.increase_fear(10)
-	
-	if current_health <= 0:
-		print("Player morreu!")
-		GameManager.display_message("Você sucumbiu à escuridão...")
-		get_tree().reload_current_scene()
+
+func _on_player_died() -> void:
+	print("Player morreu!")
+	GameManager.display_message("Você sucumbiu à escuridão...")
+	if HealthManager:
+		HealthManager.reset()
+	get_tree().reload_current_scene()
 
 func get_health() -> float:
+	if HealthManager:
+		return HealthManager.current_health
 	return current_health
 
 func get_max_health() -> float:
