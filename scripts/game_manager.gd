@@ -34,10 +34,17 @@ func _ready() -> void:
 	# Configurar como singleton se necessário
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	
-	# DayNightCycle é autoload (/root/DayNightCycle), não filho da cena main
-	if DayNightCycle:
-		DayNightCycle.day_started.connect(_on_day_started)
-		DayNightCycle.night_started.connect(_on_night_started)
+	# DayNightCycle é autoload registrado depois deste, então ainda não
+	# existe durante _ready(). Conecta no frame seguinte, quando toda a
+	# lista de autoloads já entrou na árvore.
+	_connect_day_night_cycle.call_deferred()
+
+func _connect_day_night_cycle() -> void:
+	if not DayNightCycle:
+		push_warning("GameManager: DayNightCycle não encontrado.")
+		return
+	DayNightCycle.day_started.connect(_on_day_started)
+	DayNightCycle.night_started.connect(_on_night_started)
 
 func _process(delta: float) -> void:
 	# Atualizar tempo de jogo

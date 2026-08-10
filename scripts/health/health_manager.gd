@@ -37,6 +37,12 @@ func _spawn_hud() -> void:
 	_hud = HealthHUDScene.new()
 	add_child(_hud)
 
+## Chamado pelo Player ao entrar/sair da cena, para que o HUD não
+## apareça sobre o menu inicial.
+func set_hud_visible(should_show: bool) -> void:
+	if _hud:
+		_hud.set_hud_visible(should_show)
+
 func _setup_body_parts() -> void:
 	body_parts.clear()
 	for part_id in [
@@ -74,7 +80,10 @@ func add_injury(part_id: BodyPart.Id, injury: Injury) -> void:
 	bleeding_changed.emit(get_total_bleeding())
 	pain_changed.emit(get_total_pain())
 	if UIManager and UIManager.has_method("display_message"):
-		UIManager.display_message("%s: %s!" % [part.get_part_name(), injury.get_type_name()])
+		UIManager.display_message(Localization.tr_format("MSG_INJURED", {
+			"part": part.get_part_name(),
+			"injury": injury.get_type_name(),
+		}))
 
 func remove_injury(part_id: BodyPart.Id, injury: Injury) -> void:
 	var part := get_body_part(part_id)

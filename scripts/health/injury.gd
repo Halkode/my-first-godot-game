@@ -22,16 +22,16 @@ enum Type {
 @export var treated: bool = false
 @export_range(0.0, 1.0) var treatment_quality: float = 0.0
 
-const TYPE_NAMES := {
-	Type.CUT_SHALLOW: "Corte superficial",
-	Type.CUT_DEEP: "Corte profundo",
-	Type.BURN: "Queimadura",
-	Type.FRACTURE: "Fratura",
-	Type.INFECTION: "Infecção",
+const TYPE_KEYS := {
+	Type.CUT_SHALLOW: "INJURY_CUT_SHALLOW",
+	Type.CUT_DEEP: "INJURY_CUT_DEEP",
+	Type.BURN: "INJURY_BURN",
+	Type.FRACTURE: "INJURY_FRACTURE",
+	Type.INFECTION: "INJURY_INFECTION",
 }
 
 func get_type_name() -> String:
-	return TYPE_NAMES.get(type, "Ferimento")
+	return TranslationServer.translate(TYPE_KEYS.get(type, "INJURY_CUT_SHALLOW"))
 
 ## Sangramento efetivo considerando tratamento aplicado
 func get_effective_bleeding() -> float:

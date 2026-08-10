@@ -21,6 +21,9 @@ var is_inventory_open: bool = false
 var is_memory_journal_open: bool = false
 
 func _ready() -> void:
+	# Acima do HUD (layer 10) e abaixo do fade de transição (layer 128)
+	layer = 20
+
 	# Verificar se os autoloads existem antes de conectar
 	if GameManager:
 		# Conectar sinais do GameManager apenas se existirem
@@ -286,20 +289,60 @@ func close_all_panels() -> void:
 	if is_memory_journal_open:
 		toggle_memory_journal()
 
-func display_message(message: String, duration: float = 3.0) -> void:
-	if not message_display:
-		print("Warning: Message display not found. Message: " + message)
+## Mensagens do jogo aparecem como toasts empilhados no rodapé. Eles
+## são construídos em código porque o UI.tscn não tem um nó de
+## mensagem utilizável, e assim o sistema funciona em qualquer cena.
+const TOAST_FADE_IN: float = 0.2
+const TOAST_FADE_OUT: float = 0.4
+const MAX_TOASTS: int = 4
+
+var _toast_container: VBoxContainer
+
+func _ensure_toast_container() -> void:
+	if _toast_container and is_instance_valid(_toast_container):
 		return
-		
-	message_display.text = message
-	message_display.show()
-	
-	# Criar tween para fade out
-	var tween = create_tween()
-	tween.tween_delay(duration)
-	tween.tween_property(message_display, "modulate:a", 0.0, 0.5)
-	tween.tween_callback(func(): message_display.hide())
-	tween.tween_callback(func(): message_display.modulate.a = 1.0)
+
+	var holder := Control.new()
+	holder.set_anchors_preset(Control.PRESET_FULL_RECT)
+	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(holder)
+
+	_toast_container = VBoxContainer.new()
+	_toast_container.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
+	_toast_container.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	_toast_container.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	_toast_container.offset_bottom = -48.0
+	_toast_container.alignment = BoxContainer.ALIGNMENT_END
+	_toast_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	holder.add_child(_toast_container)
+
+func display_message(message: String, duration: float = 3.0) -> void:
+	print("MENSAGEM: ", message)
+	_ensure_toast_container()
+
+	## Descarta os mais antigos para a pilha não crescer sem limite
+	while _toast_container.get_child_count() >= MAX_TOASTS:
+		_toast_container.get_child(0).queue_free()
+		_toast_container.remove_child(_toast_container.get_child(0))
+
+	var toast := PanelContainer.new()
+	toast.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	toast.modulate.a = 0.0
+
+	var label := Label.new()
+	label.text = message
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.custom_minimum_size = Vector2(320, 0)
+	toast.add_child(label)
+
+	_toast_container.add_child(toast)
+
+	var tween := create_tween()
+	tween.tween_property(toast, "modulate:a", 1.0, TOAST_FADE_IN)
+	tween.tween_interval(duration)
+	tween.tween_property(toast, "modulate:a", 0.0, TOAST_FADE_OUT)
+	tween.tween_callback(toast.queue_free)
 
 func _on_memory_unlocked(memory_data) -> void:
 	var title = "Memória"

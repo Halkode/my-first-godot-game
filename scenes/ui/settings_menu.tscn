@@ -1,0 +1,165 @@
+[gd_scene load_steps=3 format=3 uid="uid://cst1settingsmenu"]
+
+[ext_resource type="Script" path="res://scripts/ui/settings_menu.gd" id="1_script"]
+[ext_resource type="Theme" path="res://assets/ui/theme.tres" id="2_theme"]
+
+[node name="SettingsMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_theme")
+script = ExtResource("1_script")
+
+[node name="Dim" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+
+[node name="Panel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -230.0
+offset_top = -220.0
+offset_right = 230.0
+offset_bottom = 220.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="Layout" type="VBoxContainer" parent="Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Title" type="Label" parent="Panel/Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Configurações"
+horizontal_alignment = 1
+
+[node name="TitleSeparator" type="HSeparator" parent="Panel/Margin/Layout"]
+layout_mode = 2
+
+[node name="LanguageLabel" type="Label" parent="Panel/Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.6, 0.35, 1)
+theme_override_font_sizes/font_size = 13
+text = "Idioma"
+
+[node name="LanguageOption" type="OptionButton" parent="Panel/Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="DisplayLabel" type="Label" parent="Panel/Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.6, 0.35, 1)
+theme_override_font_sizes/font_size = 13
+text = "Vídeo"
+
+[node name="FullscreenRow" type="HBoxContainer" parent="Panel/Margin/Layout"]
+layout_mode = 2
+
+[node name="FullscreenLabel" type="Label" parent="Panel/Margin/Layout/FullscreenRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Tela cheia"
+
+[node name="FullscreenCheck" type="CheckButton" parent="Panel/Margin/Layout/FullscreenRow"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="VSyncRow" type="HBoxContainer" parent="Panel/Margin/Layout"]
+layout_mode = 2
+
+[node name="VSyncLabel" type="Label" parent="Panel/Margin/Layout/VSyncRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Sincronização vertical"
+
+[node name="VSyncCheck" type="CheckButton" parent="Panel/Margin/Layout/VSyncRow"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="AudioLabel" type="Label" parent="Panel/Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.6, 0.35, 1)
+theme_override_font_sizes/font_size = 13
+text = "Áudio"
+
+[node name="MasterLabel" type="Label" parent="Panel/Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Volume geral"
+
+[node name="MasterSlider" type="HSlider" parent="Panel/Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 0.8
+
+[node name="MusicLabel" type="Label" parent="Panel/Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Música"
+
+[node name="MusicSlider" type="HSlider" parent="Panel/Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 0.7
+
+[node name="SFXLabel" type="Label" parent="Panel/Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Efeitos"
+
+[node name="SFXSlider" type="HSlider" parent="Panel/Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 0.8
+
+[node name="Spacer" type="Control" parent="Panel/Margin/Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Actions" type="HBoxContainer" parent="Panel/Margin/Layout"]
+layout_mode = 2
+
+[node name="ResetButton" type="Button" parent="Panel/Margin/Layout/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Restaurar padrões"
+
+[node name="BackButton" type="Button" parent="Panel/Margin/Layout/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Voltar"

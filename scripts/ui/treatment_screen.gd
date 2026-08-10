@@ -17,6 +17,8 @@ func _ready() -> void:
 	hide()
 
 func _build_ui() -> void:
+	theme = preload("res://assets/ui/theme.tres")
+
 	var bg := ColorRect.new()
 	bg.color = Color(0, 0, 0, 0.75)
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -29,7 +31,7 @@ func _build_ui() -> void:
 	add_child(root)
 
 	var title := Label.new()
-	title.text = "Tratamento (T para fechar)"
+	title.text = tr("TREATMENT_TITLE")
 	title.add_theme_color_override("font_color", Color.WHITE)
 	root.add_child(title)
 
@@ -78,7 +80,7 @@ func _rebuild_injury_panel() -> void:
 
 	if not _selected_part:
 		var hint := Label.new()
-		hint.text = "Selecione uma parte do corpo ferida."
+		hint.text = tr("TREATMENT_SELECT_PART")
 		_injury_panel.add_child(hint)
 		return
 
@@ -89,7 +91,9 @@ func _rebuild_injury_panel() -> void:
 		_injury_panel.add_child(row)
 
 		var label := Label.new()
-		var status := "tratado (%d%%)" % roundi(injury.treatment_quality * 100) if injury.treated else "não tratado"
+		var status := Localization.tr_format(
+			"TREATMENT_TREATED", {"quality": roundi(injury.treatment_quality * 100)}
+		) if injury.treated else tr("TREATMENT_UNTREATED")
 		label.text = "%s — %s" % [injury.get_type_name(), status]
 		row.add_child(label)
 
@@ -98,13 +102,13 @@ func _rebuild_injury_panel() -> void:
 
 		if available_items.is_empty():
 			var no_item_label := Label.new()
-			no_item_label.text = "  (nenhum item de tratamento disponível)"
+			no_item_label.text = tr("TREATMENT_NO_ITEMS")
 			row.add_child(no_item_label)
 			continue
 
 		for item_name in available_items:
 			var treat_button := Button.new()
-			treat_button.text = "Usar %s" % item_name
+			treat_button.text = Localization.tr_format("TREATMENT_USE_ITEM", {"item": item_name})
 			treat_button.pressed.connect(_on_treat_pressed.bind(_selected_part, injury, item_name))
 			row.add_child(treat_button)
 

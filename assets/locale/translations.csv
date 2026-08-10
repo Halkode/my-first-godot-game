@@ -1,0 +1,65 @@
+key,pt_BR,en,es
+GAME_TITLE,Sem Luz,No Light,Sin Luz
+GAME_SUBTITLE,Sobreviva mais um dia,Survive one more day,Sobrevive un día más
+MENU_NEW_GAME,Novo jogo,New game,Nueva partida
+MENU_CONTINUE,Carregar jogo,Load game,Cargar partida
+MENU_SETTINGS,Configurações,Settings,Ajustes
+MENU_QUIT,Sair,Quit,Salir
+MENU_BACK,Voltar,Back,Volver
+SETTINGS_TITLE,Configurações,Settings,Ajustes
+SETTINGS_LANGUAGE,Idioma,Language,Idioma
+SETTINGS_DISPLAY,Vídeo,Display,Vídeo
+SETTINGS_AUDIO,Áudio,Audio,Audio
+SETTINGS_FULLSCREEN,Tela cheia,Fullscreen,Pantalla completa
+SETTINGS_VSYNC,Sincronização vertical,VSync,Sincronización vertical
+SETTINGS_MASTER_VOLUME,Volume geral,Master volume,Volumen general
+SETTINGS_MUSIC_VOLUME,Música,Music,Música
+SETTINGS_SFX_VOLUME,Efeitos,Sound effects,Efectos
+SETTINGS_RESET,Restaurar padrões,Reset to defaults,Restaurar valores
+CONFIRM_NEW_GAME_TITLE,Começar um novo jogo?,Start a new game?,¿Empezar una nueva partida?
+CONFIRM_NEW_GAME_BODY,Isso apaga o jogo salvo. Não dá para desfazer.,This erases your saved game. It cannot be undone.,Esto borra la partida guardada. No se puede deshacer.
+CONFIRM_YES,Confirmar,Confirm,Confirmar
+CONFIRM_NO,Cancelar,Cancel,Cancelar
+HUD_HEALTH,Vida,Health,Salud
+HUD_PAIN,Dor,Pain,Dolor
+HUD_BLEEDING,Sangrando,Bleeding,Sangrando
+HUD_DAY,Dia,Day,Día
+TREATMENT_TITLE,Tratamento,Treatment,Tratamiento
+TREATMENT_SELECT_PART,Selecione uma parte do corpo ferida.,Select an injured body part.,Selecciona una parte del cuerpo herida.
+TREATMENT_NO_ITEMS,Nenhum item de tratamento disponível.,No treatment items available.,No hay artículos de tratamiento disponibles.
+TREATMENT_USE_ITEM,Usar {item},Use {item},Usar {item}
+TREATMENT_UNTREATED,não tratado,untreated,sin tratar
+TREATMENT_TREATED,tratado ({quality}%),treated ({quality}%),tratado ({quality}%)
+BANDAGE_TITLE,Aplicando bandagem,Applying bandage,Aplicando vendaje
+BANDAGE_INSTRUCTIONS,Segure o botão esquerdo e arraste em círculo ao redor do membro.,Hold the left button and drag in a circle around the limb.,Mantén pulsado el botón izquierdo y arrastra en círculo alrededor del miembro.
+BANDAGE_TIME,Tempo: {seconds}s,Time: {seconds}s,Tiempo: {seconds}s
+PHASE_DAWN,Amanhecer,Dawn,Amanecer
+PHASE_DAY,Dia,Day,Día
+PHASE_DUSK,Anoitecer,Dusk,Anochecer
+PHASE_NIGHT,Noite,Night,Noche
+BODY_HEAD,Cabeça,Head,Cabeza
+BODY_TORSO,Torso,Torso,Torso
+BODY_ARM_LEFT,Braço esquerdo,Left arm,Brazo izquierdo
+BODY_ARM_RIGHT,Braço direito,Right arm,Brazo derecho
+BODY_LEG_LEFT,Perna esquerda,Left leg,Pierna izquierda
+BODY_LEG_RIGHT,Perna direita,Right leg,Pierna derecha
+INJURY_CUT_SHALLOW,Corte superficial,Shallow cut,Corte superficial
+INJURY_CUT_DEEP,Corte profundo,Deep cut,Corte profundo
+INJURY_BURN,Queimadura,Burn,Quemadura
+INJURY_FRACTURE,Fratura,Fracture,Fractura
+INJURY_INFECTION,Infecção,Infection,Infección
+ITEM_BANDAGE,Bandagem,Bandage,Vendaje
+ITEM_GAUZE,Gaze,Gauze,Gasa
+MSG_INVENTORY_FULL,Inventário cheio!,Inventory full!,¡Inventario lleno!
+MSG_NO_ITEM,Você não tem {item}.,You don't have {item}.,No tienes {item}.
+MSG_TREATED,{injury} tratado em {part} (qualidade {quality}%).,{injury} treated on {part} (quality {quality}%).,{injury} tratado en {part} (calidad {quality}%).
+MSG_INJURED,{part}: {injury}!,{part}: {injury}!,{part}: {injury}!
+MSG_DEATH,Você sucumbiu à escuridão...,You succumbed to the darkness...,Sucumbiste a la oscuridad...
+MSG_UNREACHABLE,Não consigo alcançar esse item.,I can't reach that item.,No puedo alcanzar ese objeto.
+MENU_RESUME,Continuar,Resume,Continuar
+MENU_SAVE,Salvar jogo,Save game,Guardar partida
+MENU_MAIN_MENU,Menu principal,Main menu,Menú principal
+PAUSE_TITLE,Pausado,Paused,En pausa
+MSG_SAVED,Jogo salvo.,Game saved.,Partida guardada.
+CONFIRM_QUIT_TITLE,Voltar ao menu?,Return to menu?,¿Volver al menú?
+CONFIRM_QUIT_BODY,O progresso não salvo será perdido.,Unsaved progress will be lost.,Se perderá el progreso no guardado.

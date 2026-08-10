@@ -1,0 +1,151 @@
+[gd_scene load_steps=6 format=3 uid="uid://cmn1mainmenu001"]
+
+[ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="1_script"]
+[ext_resource type="Theme" path="res://assets/ui/theme.tres" id="2_theme"]
+[ext_resource type="Shader" path="res://assets/shaders/menu_fog.gdshader" id="3_shader"]
+[ext_resource type="PackedScene" path="res://scenes/ui/settings_menu.tscn" id="4_settings"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fog"]
+shader = ExtResource("3_shader")
+shader_parameter/fog_color = Color(0.3, 0.32, 0.38, 1)
+shader_parameter/base_color = Color(0.03, 0.03, 0.05, 1)
+shader_parameter/fog_intensity = 0.35
+shader_parameter/scroll_speed = 0.02
+shader_parameter/vignette_strength = 1.1
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_theme")
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_fog")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Dust" type="CPUParticles2D" parent="."]
+position = Vector2(576, 0)
+amount = 60
+lifetime = 14.0
+preprocess = 8.0
+emission_shape = 3
+emission_rect_extents = Vector2(700, 20)
+direction = Vector2(0, 1)
+spread = 25.0
+gravity = Vector2(6, 10)
+initial_velocity_min = 4.0
+initial_velocity_max = 14.0
+scale_amount_min = 0.5
+scale_amount_max = 1.6
+color = Color(0.7, 0.72, 0.78, 0.18)
+
+[node name="Content" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 90
+theme_override_constants/margin_top = 80
+theme_override_constants/margin_right = 90
+theme_override_constants/margin_bottom = 60
+
+[node name="Layout" type="VBoxContainer" parent="Content"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 1
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="Title" type="Label" parent="Content/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.88, 0.86, 0.82, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.85)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 3
+theme_override_font_sizes/font_size = 64
+text = "Sem Luz"
+
+[node name="Subtitle" type="Label" parent="Content/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.58, 0.55, 1)
+theme_override_font_sizes/font_size = 17
+text = "Sobreviva mais um dia"
+
+[node name="TitleSpacer" type="Control" parent="Content/Layout"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+mouse_filter = 2
+
+[node name="Buttons" type="VBoxContainer" parent="Content/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(240, 0)
+size_flags_horizontal = 0
+theme_override_constants/separation = 8
+
+[node name="NewGameButton" type="Button" parent="Content/Layout/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Novo jogo"
+
+[node name="ContinueButton" type="Button" parent="Content/Layout/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Carregar jogo"
+
+[node name="SettingsButton" type="Button" parent="Content/Layout/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Configurações"
+
+[node name="QuitButton" type="Button" parent="Content/Layout/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Sair"
+
+[node name="VersionLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -110.0
+offset_top = -34.0
+offset_right = -18.0
+offset_bottom = -12.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.45, 0.44, 0.43, 1)
+theme_override_font_sizes/font_size = 12
+text = "v0.1.0"
+horizontal_alignment = 2
+
+[node name="SettingsMenu" parent="." instance=ExtResource("4_settings")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+
+[node name="ConfirmNewGameDialog" type="ConfirmationDialog" parent="."]
+unique_name_in_owner = true
+title = "Começar um novo jogo?"
+size = Vector2i(420, 130)
+theme = ExtResource("2_theme")
+dialog_text = "Isso apaga o jogo salvo. Não dá para desfazer."

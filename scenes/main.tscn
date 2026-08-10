@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://do4yafe14qpa3"]
+[gd_scene load_steps=9 format=3 uid="uid://do4yafe14qpa3"]
 
 [ext_resource type="Script" uid="uid://bxadcnt0q85of" path="res://scripts/main.gd" id="1_elqb8"]
 [ext_resource type="PackedScene" uid="uid://dew7xdeorjr5w" path="res://scenes/UI.tscn" id="2_rvslj"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://cb2rbd5nykaxi" path="res://icon.svg" id="5_c01mt"]
 [ext_resource type="PackedScene" uid="uid://bllke6nby7koo" path="res://scenes/tilemaps.tscn" id="5_vcsgt"]
 [ext_resource type="PackedScene" uid="uid://dc4t1iw0quxgi" path="res://scenes/items/Table.tscn" id="6_c01mt"]
+[ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="7_pause"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_nxtc6"]
 radius = 8.0
@@ -36,3 +37,9 @@ shape = SubResource("CircleShape2D_nxtc6")
 
 [node name="Table" parent="." instance=ExtResource("6_c01mt")]
 position = Vector2(-96, 0)
+
+[node name="UILayer" type="CanvasLayer" parent="."]
+layer = 30
+
+[node name="PauseMenu" parent="UILayer" instance=ExtResource("7_pause")]
+visible = false

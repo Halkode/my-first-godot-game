@@ -25,10 +25,17 @@ func _ready() -> void:
 
 	current_health = max_health
 
+	add_to_group("player")
+
 	if HealthManager:
 		HealthManager.max_health = max_health
 		HealthManager.current_health = max_health
 		HealthManager.player_died.connect(_on_player_died)
+		HealthManager.set_hud_visible(true)
+
+func _exit_tree() -> void:
+	if HealthManager:
+		HealthManager.set_hud_visible(false)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if ItemManager and ItemManager.is_menu_visible():
@@ -155,7 +162,7 @@ func on_item_clicked(item_node: Node) -> void:
 			move_to_interact(closest_reachable_tile_world_pos, item_node)
 		else:
 			print("Item too far, cannot find reachable tile.")
-			ItemManager.display_message("Não consigo alcançar esse item.")
+			ItemManager.display_message(tr("MSG_UNREACHABLE"))
 
 ## Converte uma posição de mundo para coordenadas de tile do grid.
 func _tile_at(world_pos: Vector2) -> Vector2i:
@@ -222,7 +229,7 @@ func move_to_interact(interaction_world_pos: Vector2, item_node: Node) -> void:
 			if ItemManager:
 				ItemManager.show_item_menu(item_node, get_global_mouse_position())
 		else:
-			ItemManager.display_message("Não consigo alcançar esse item.")
+			ItemManager.display_message(tr("MSG_UNREACHABLE"))
 		pending_interaction_item = null
 
 func move_to_attack(target_node: Node) -> void:
@@ -280,7 +287,7 @@ func take_damage(amount: float) -> void:
 
 func _on_player_died() -> void:
 	print("Player morreu!")
-	GameManager.display_message("Você sucumbiu à escuridão...")
+	GameManager.display_message(tr("MSG_DEATH"))
 	if HealthManager:
 		HealthManager.reset()
 	get_tree().reload_current_scene()

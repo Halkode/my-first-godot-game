@@ -34,6 +34,8 @@ func _ready() -> void:
 	_build_ui()
 
 func _build_ui() -> void:
+	theme = preload("res://assets/ui/theme.tres")
+
 	var bg := ColorRect.new()
 	bg.color = Color(0, 0, 0, 0.85)
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -46,11 +48,11 @@ func _build_ui() -> void:
 	add_child(root)
 
 	var title := Label.new()
-	title.text = "Aplicando bandagem"
+	title.text = tr("BANDAGE_TITLE")
 	root.add_child(title)
 
 	_instructions = Label.new()
-	_instructions.text = "Segure o botão esquerdo e arraste em círculo ao redor do membro."
+	_instructions.text = tr("BANDAGE_INSTRUCTIONS")
 	_instructions.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	root.add_child(_instructions)
 
@@ -96,7 +98,9 @@ func _process(delta: float) -> void:
 	if _finished or not visible:
 		return
 	_time_left -= delta
-	_timer_label.text = "Tempo: %.1fs" % max(_time_left, 0.0)
+	_timer_label.text = Localization.tr_format(
+		"BANDAGE_TIME", {"seconds": "%.1f" % maxf(_time_left, 0.0)}
+	)
 	if _wrap_indicator:
 		_wrap_indicator.queue_redraw()
 	if _time_left <= 0.0:

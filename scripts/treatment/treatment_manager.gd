@@ -79,7 +79,9 @@ func apply_treatment(part: BodyPart, injury: Injury, item_name: String) -> void:
 		return
 	if not InventoryManager or not InventoryManager.has_item(item_name):
 		if UIManager:
-			UIManager.display_message("Você não tem %s." % item_name)
+			UIManager.display_message(
+				Localization.tr_format("MSG_NO_ITEM", {"item": item_name})
+			)
 		return
 
 	if MINIGAME_ITEMS.has(item_name):
@@ -126,9 +128,11 @@ func _finish_treatment(part: BodyPart, injury: Injury, item_name: String, qualit
 	treatment_completed.emit(part, injury, quality)
 
 	if UIManager:
-		UIManager.display_message("%s tratado em %s (qualidade %d%%)." % [
-			injury.get_type_name(), part.get_part_name(), roundi(quality * 100)
-		])
+		UIManager.display_message(Localization.tr_format("MSG_TREATED", {
+			"injury": injury.get_type_name(),
+			"part": part.get_part_name(),
+			"quality": roundi(quality * 100),
+		}))
 
 	if _screen and is_open:
 		_screen.refresh()

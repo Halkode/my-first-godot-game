@@ -169,12 +169,16 @@ func get_time_string() -> String:
 	var minutes := int((current_hour - hours) * 60.0)
 	return "%02d:%02d" % [hours, minutes]
 
-func get_phase_name() -> String:
+## Chave de tradução da fase atual, para ser passada a tr().
+func get_phase_key() -> String:
 	match current_phase:
-		Phase.DAWN: return "Amanhecer"
-		Phase.DAY: return "Dia"
-		Phase.DUSK: return "Anoitecer"
-		_: return "Noite"
+		Phase.DAWN: return "PHASE_DAWN"
+		Phase.DAY: return "PHASE_DAY"
+		Phase.DUSK: return "PHASE_DUSK"
+		_: return "PHASE_NIGHT"
+
+func get_phase_name() -> String:
+	return tr(get_phase_key())
 
 ## Progresso do dia atual (0.0 = 00:00, 1.0 = 24:00).
 func get_day_progress() -> float:

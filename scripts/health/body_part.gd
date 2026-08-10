@@ -15,17 +15,17 @@ enum Id {
 @export var id: Id = Id.TORSO
 @export var injuries: Array[Injury] = []
 
-const ID_NAMES := {
-	Id.HEAD: "Cabeça",
-	Id.TORSO: "Torso",
-	Id.ARM_LEFT: "Braço esquerdo",
-	Id.ARM_RIGHT: "Braço direito",
-	Id.LEG_LEFT: "Perna esquerda",
-	Id.LEG_RIGHT: "Perna direita",
+const ID_KEYS := {
+	Id.HEAD: "BODY_HEAD",
+	Id.TORSO: "BODY_TORSO",
+	Id.ARM_LEFT: "BODY_ARM_LEFT",
+	Id.ARM_RIGHT: "BODY_ARM_RIGHT",
+	Id.LEG_LEFT: "BODY_LEG_LEFT",
+	Id.LEG_RIGHT: "BODY_LEG_RIGHT",
 }
 
 func get_part_name() -> String:
-	return ID_NAMES.get(id, "Parte do corpo")
+	return TranslationServer.translate(ID_KEYS.get(id, "BODY_TORSO"))
 
 func add_injury(injury: Injury) -> void:
 	injuries.append(injury)

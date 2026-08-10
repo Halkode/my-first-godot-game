@@ -11,17 +11,17 @@ func _ready() -> void:
 	# ItemManager, AudioManager, DayNightCycle, NarrativeManager, UIManager são autoloads
 	# e podem ser acessados diretamente sem @onready ou get_node
 	
-	# Verificar se o LightingSystem existe
-	if not lighting_system:
-		print("ERRO: LightingSystem não encontrado! Certifique-se de que foi adicionado à cena.")
-		return
-	
-	# Adicionar o player ao grupo "player" para o LightingSystem
-	var player_node = get_node_or_null("TileMaps/Player")
-	if player_node:
-		player_node.add_to_group("player")
-		lighting_system.player_node = player_node
-		
+	# O LightingSystem é opcional: sem ele o resto da cena ainda deve
+	# ser montado, então apenas avisamos em vez de abortar o _ready.
+	if lighting_system:
+		# O Player se registra no grupo "player" no próprio _ready
+		var player_node = get_tree().get_first_node_in_group("player")
+		if player_node:
+			lighting_system.player_node = player_node
+	else:
+		push_warning("LightingSystem não encontrado na cena.")
+
+
 	# Conectar sinais do GameManager ao AudioManager
 	GameManager.fear_changed.connect(AudioManager._on_fear_changed)
 	GameManager.sanity_changed.connect(AudioManager._on_sanity_changed)
