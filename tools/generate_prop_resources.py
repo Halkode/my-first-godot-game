@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 """Gera um PropData .tres para cada sprite em assets/isometric_tiles/.
 
-Cada PNG é uma imagem 500x500 contendo um único objeto isométrico com
-muita margem transparente. Este script calcula a região com conteúdo
-real (bbox do canal alpha) e uma escala que faz o objeto ocupar o
-número de tiles definido em FOOTPRINTS, no grid isométrico de 32x16.
+Cada PNG é uma imagem 500x500 contendo um único objeto com muita
+margem transparente. Este script calcula a região com conteúdo real
+(bbox do canal alpha) e uma escala que faz o objeto ocupar o número de
+tiles definido em FOOTPRINTS, no grid top-down de 32x32.
+
+ATENÇÃO: a arte em assets/isometric_tiles/ é desenhada em perspectiva
+isométrica e não encaixa visualmente numa câmera top-down. Estes
+resources existem para manter o pipeline funcionando; troque os PNGs
+por arte top-down e rode este script de novo.
 
 Uso:  python3 tools/generate_prop_resources.py
 """
@@ -18,7 +23,7 @@ REPO = Path(__file__).resolve().parent.parent
 SPRITE_DIR = REPO / "assets" / "isometric_tiles"
 OUT_DIR = REPO / "data" / "props"
 
-TILE_WIDTH = 32
+TILE_SIZE = 32
 
 # Categorias por padrão no nome do arquivo. A primeira que casar vence,
 # então os padrões mais específicos vêm antes dos genéricos.
@@ -141,7 +146,7 @@ def main() -> None:
 
         category = categorize(stem)
         footprint = FOOTPRINTS[category]
-        scale = round(TILE_WIDTH * footprint / width, 4)
+        scale = round(TILE_SIZE * footprint / max(width, height), 4)
 
         uid = read_uid(png)
         uid_attr = f'uid="{uid}" ' if uid else ""

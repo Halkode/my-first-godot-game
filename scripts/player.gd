@@ -19,9 +19,8 @@ var pending_attack_target: Node = null
 @onready var layer1: TileMapLayer = $"../TileMaps/Layer1"
 
 func _ready() -> void:
-	# Snap initial position to tile center
-	var current_tile = layer0.local_to_map(global_position)
-	global_position = layer0.map_to_local(current_tile)
+	# Alinha a posição inicial ao centro do tile
+	global_position = _world_at(_tile_at(global_position))
 	print("Player initial position (snapped to center): ", global_position)
 
 	current_health = max_health
@@ -140,16 +139,13 @@ func _advance_to_next_target() -> void:
 func on_item_clicked(item_node: Node) -> void:
 	print("Item clicked: ", item_node.name)
 	
-	var player_tile_coords = layer0.local_to_map(global_position)
-	var item_tile_coords = layer0.local_to_map(item_node.global_position)
-	
-	var dist_x = abs(player_tile_coords.x - item_tile_coords.x)
-	var dist_y = abs(player_tile_coords.y - item_tile_coords.y)
-	var manhattan_distance = dist_x + dist_y
-	
-	print("Player tile: ", player_tile_coords, ", Item tile: ", item_tile_coords, ", Distance: ", manhattan_distance)
-	
-	if manhattan_distance <= item_node.interaction_range_tiles:
+	var player_tile_coords = _tile_at(global_position)
+	var item_tile_coords = _tile_at(item_node.global_position)
+	var distance = MovementUtils.tile_distance(player_tile_coords, item_tile_coords)
+
+	print("Player tile: ", player_tile_coords, ", Item tile: ", item_tile_coords, ", Distance: ", distance)
+
+	if distance <= item_node.interaction_range_tiles:
 		if ItemManager:
 			ItemManager.show_item_menu(item_node, get_global_mouse_position())
 	else:
@@ -161,30 +157,40 @@ func on_item_clicked(item_node: Node) -> void:
 			print("Item too far, cannot find reachable tile.")
 			ItemManager.display_message("Não consigo alcançar esse item.")
 
+## Converte uma posição de mundo para coordenadas de tile do grid.
+func _tile_at(world_pos: Vector2) -> Vector2i:
+	return layer0.local_to_map(layer0.to_local(world_pos))
+
+## Converte coordenadas de tile para a posição de mundo do seu centro.
+func _world_at(tile: Vector2i) -> Vector2:
+	return layer0.to_global(layer0.map_to_local(tile))
+
 func _find_closest_reachable_tile_world_pos(target_tile_coords: Vector2i, max_range: int) -> Vector2:
-	var player_tile_coords = layer0.local_to_map(global_position)
+	var player_tile_coords = _tile_at(global_position)
 	var min_dist = INF
 	var best_world_pos = Vector2.INF
 
 	for dx in range(-max_range, max_range + 1):
 		for dy in range(-max_range, max_range + 1):
-			if abs(dx) + abs(dy) <= max_range:
-				var check_tile = Vector2i(target_tile_coords.x + dx, target_tile_coords.y + dy)
+			var check_tile = Vector2i(target_tile_coords.x + dx, target_tile_coords.y + dy)
+			if MovementUtils.tile_distance(check_tile, target_tile_coords) > max_range:
+				continue
 
-				if layer0.get_cell_source_id(check_tile) != -1 and \
-				   layer1.get_cell_source_id(check_tile) == -1:
-					
-					var current_path = MovementUtils.get_path_to_tile_layers(
-						global_position,
-						layer0.map_to_local(check_tile),
-						layer0,
-						layer1
-					)
-					if not current_path.is_empty():
-						var dist_from_player_to_check_tile = abs(player_tile_coords.x - check_tile.x) + abs(player_tile_coords.y - check_tile.y)
-						if dist_from_player_to_check_tile < min_dist:
-							min_dist = dist_from_player_to_check_tile
-							best_world_pos = layer0.map_to_local(check_tile)
+			if layer0.get_cell_source_id(check_tile) == -1 or \
+			   layer1.get_cell_source_id(check_tile) != -1:
+				continue
+
+			var check_world_pos = _world_at(check_tile)
+			var current_path = MovementUtils.get_path_to_tile_layers(
+				global_position, check_world_pos, layer0, layer1
+			)
+			if current_path.is_empty():
+				continue
+
+			var dist = MovementUtils.tile_distance(player_tile_coords, check_tile)
+			if dist < min_dist:
+				min_dist = dist
+				best_world_pos = check_world_pos
 
 	return best_world_pos
 
@@ -208,13 +214,11 @@ func move_to_interact(interaction_world_pos: Vector2, item_node: Node) -> void:
 		print("Moving to interaction position, first target: ", target_position)
 	else:
 		print("Cannot create path to interaction position, executing immediately if already close.")
-		var player_tile_coords = layer0.local_to_map(global_position)
-		var item_tile_coords = layer0.local_to_map(item_node.global_position)
-		var dist_x = abs(player_tile_coords.x - item_tile_coords.x)
-		var dist_y = abs(player_tile_coords.y - item_tile_coords.y)
-		var manhattan_distance = dist_x + dist_y
+		var distance = MovementUtils.tile_distance(
+			_tile_at(global_position), _tile_at(item_node.global_position)
+		)
 
-		if manhattan_distance <= item_node.interaction_range_tiles:
+		if distance <= item_node.interaction_range_tiles:
 			if ItemManager:
 				ItemManager.show_item_menu(item_node, get_global_mouse_position())
 		else:
@@ -227,10 +231,9 @@ func move_to_attack(target_node: Node) -> void:
 	pending_attack_target = target_node
 	pending_interaction_item = null
 	
-	var target_tile_coords = layer0.local_to_map(target_node.global_position)
-	# Usando um valor fixo para tile_size já que não temos acesso ao TileSet
-	var tile_size = 16 # Ajuste conforme necessário
-	var closest_attack_tile_pos = _find_closest_reachable_tile_world_pos(target_tile_coords, int(attack_range / tile_size))
+	var target_tile_coords = _tile_at(target_node.global_position)
+	var range_in_tiles = int(attack_range / Constants.TILE_SIZE)
+	var closest_attack_tile_pos = _find_closest_reachable_tile_world_pos(target_tile_coords, range_in_tiles)
 	
 	if closest_attack_tile_pos != Vector2.INF:
 		var new_path = MovementUtils.get_path_to_tile_layers(

@@ -1,7 +1,7 @@
 class_name PropData
 extends Resource
 
-## Descreve um objeto cenográfico posicionável no mundo isométrico.
+## Descreve um objeto cenográfico posicionável no mundo top-down.
 ## Cada sprite de assets/isometric_tiles/ tem um .tres correspondente
 ## em data/props/, gerado por tools/generate_prop_resources.py.
 
@@ -26,10 +26,10 @@ enum Category {
 @export var content_region: Rect2i = Rect2i()
 
 ## Escala sugerida para que o objeto ocupe aproximadamente
-## `footprint_tiles` tiles do grid isométrico (32x16).
+## `footprint_tiles` tiles do grid top-down (32x32).
 @export var suggested_scale: float = 1.0
 
-## Quantos tiles de largura o objeto deve ocupar no grid.
+## Quantos tiles o objeto deve ocupar no grid.
 @export var footprint_tiles: float = 1.0
 
 ## Se verdadeiro, bloqueia o movimento do jogador (vai para Layer1).
@@ -55,13 +55,13 @@ const CATEGORY_NAMES := {
 func get_category_name() -> String:
 	return CATEGORY_NAMES.get(category, "Objeto")
 
-## Cria um Sprite2D já recortado, escalado e ancorado na base do tile.
+## Cria um Sprite2D já recortado e escalado, centrado no tile.
+## Numa câmera top-down o objeto é visto de cima, então ele fica
+## centrado no tile em vez de ancorado pela base como no isométrico.
 func build_sprite() -> Sprite2D:
 	var sprite := Sprite2D.new()
 	sprite.texture = texture
 	sprite.region_enabled = true
 	sprite.region_rect = Rect2(content_region)
 	sprite.scale = Vector2(suggested_scale, suggested_scale)
-	## Ancora a base do sprite no centro do tile em vez do centro da imagem
-	sprite.offset = Vector2(0, -content_region.size.y * 0.5)
 	return sprite

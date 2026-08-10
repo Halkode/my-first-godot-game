@@ -1,4 +1,4 @@
-# TODO - Jogo Isométrico Darkwood
+# TODO - Jogo Top-Down Survival Horror
 
 ## Fase 2: Correção dos erros de parse nos scripts ✅
 

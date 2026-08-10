@@ -62,8 +62,8 @@ func spawn_prop(id: String) -> Node2D:
 		var body := StaticBody2D.new()
 		var shape := CollisionShape2D.new()
 		var rect := RectangleShape2D.new()
-		## Footprint no grid isométrico: largura do tile x metade da altura
-		rect.size = Vector2(32.0 * prop.footprint_tiles, 16.0 * prop.footprint_tiles)
+		var side := Constants.TILE_SIZE * prop.footprint_tiles
+		rect.size = Vector2(side, side)
 		shape.shape = rect
 		body.add_child(shape)
 		root.add_child(body)

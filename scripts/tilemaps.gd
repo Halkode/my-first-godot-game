@@ -16,11 +16,13 @@ func _process(_delta: float) -> void:
 
 func setup_hover_polygon() -> void:
 	hover_effect = Polygon2D.new()
+	# Quadrado de 32x32 centrado no tile (grid top-down)
+	var half := Constants.TILE_SIZE / 2.0
 	hover_effect.polygon = PackedVector2Array([
-		Vector2(0, -8), # Top
-		Vector2(16, 0), # Right
-		Vector2(0, 8), # Bottom
-		Vector2(-16, 0) # Left
+		Vector2(-half, -half),
+		Vector2(half, -half),
+		Vector2(half, half),
+		Vector2(-half, half),
 	])
 	hover_effect.color = Color(1, 1, 1, 0.2)
 	hover_effect.visible = false

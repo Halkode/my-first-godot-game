@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://bcxu4wnvekr3g" path="res://scripts/tilemaps.gd" id="1_j3la0"]
 [ext_resource type="TileSet" uid="uid://iwr8yvyyljif" path="res://assets/layer0.tres" id="1_lfi36"]
 [ext_resource type="TileSet" uid="uid://cbnffwt8jxdgo" path="res://assets/layer1.tres" id="2_p5sh7"]
-[ext_resource type="TileSet" uid="uid://cjcnkqx8jb3tm" path="res://assets/dungeon_tileset.tres" id="4_arm6k"]
+[ext_resource type="TileSet" uid="uid://c6g1bf5neqp6j" path="res://assets/layer2.tres" id="4_arm6k"]
 
 [node name="TileMaps" type="Node2D"]
 y_sort_enabled = true
@@ -19,7 +19,6 @@ z_index = 1
 y_sort_enabled = true
 tile_map_data = PackedByteArray("AAD6/wQAAAABAAAAAAD6/wMAAAABAAAAAAD6/wIAAAABAAAAAAD6/wEAAAABAAAAAAD6/wAAAAABAAAAAAD6////AAABAAAAAAD6//7/AAABAAAAAAD6//3/AAABAAAAAAD6//z/AAABAAAAAAD7//v/AAABAAAAAAD8//v/AAABAAAAAAD9//v/AAABAAAAAAD+//v/AAABAAAAAAD///v/AAABAAAAAAAAAPv/AAABAAAAAAABAPv/AAABAAAAAAACAPv/AAABAAAAAAADAPv/AAABAAAAAAD6//v/AAABAAAAAAA=")
 tile_set = ExtResource("2_p5sh7")
-y_sort_origin = 1
 
 [node name="Layer2" type="TileMapLayer" parent="."]
 tile_set = ExtResource("4_arm6k")
