@@ -34,11 +34,10 @@ func _ready() -> void:
 	# Configurar como singleton se necessário
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	
-	# Conectar sinais do DayNightCycle
-	var day_night_cycle = get_node_or_null("/root/main/DayNightCycle")
-	if day_night_cycle:
-		day_night_cycle.day_started.connect(_on_day_started)
-		day_night_cycle.night_started.connect(_on_night_started)
+	# DayNightCycle é autoload (/root/DayNightCycle), não filho da cena main
+	if DayNightCycle:
+		DayNightCycle.day_started.connect(_on_day_started)
+		DayNightCycle.night_started.connect(_on_night_started)
 
 func _process(delta: float) -> void:
 	# Atualizar tempo de jogo

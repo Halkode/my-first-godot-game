@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="PropData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/prop_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bqd05eom1wus7" path="res://assets/isometric_tiles/isobookcase-back.png" id="2_tex"]
+
+[resource]
+script = ExtResource("1_script")
+id = "isobookcase-back"
+display_name = "isobookcase-back"
+category = 3
+texture = ExtResource("2_tex")
+content_region = Rect2i(137, 3, 245, 494)
+suggested_scale = 0.1306
+footprint_tiles = 1.0
+blocks_movement = true
+interactable = false
+light_energy = 0.0

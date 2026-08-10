@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="PropData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/prop_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://b7e1omuw6bh40" path="res://assets/isometric_tiles/isobush.png" id="2_tex"]
+
+[resource]
+script = ExtResource("1_script")
+id = "isobush"
+display_name = "Arbusto"
+category = 6
+texture = ExtResource("2_tex")
+content_region = Rect2i(41, 50, 426, 421)
+suggested_scale = 0.1127
+footprint_tiles = 1.5
+blocks_movement = true
+interactable = false
+light_energy = 0.0

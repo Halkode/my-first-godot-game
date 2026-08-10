@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="PropData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/prop_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bmx3fhil1gxtr" path="res://assets/isometric_tiles/isoChest.png" id="2_tex"]
+
+[resource]
+script = ExtResource("1_script")
+id = "isoChest"
+display_name = "Baú"
+category = 4
+texture = ExtResource("2_tex")
+content_region = Rect2i(14, 52, 481, 433)
+suggested_scale = 0.0466
+footprint_tiles = 0.7
+blocks_movement = true
+interactable = true
+light_energy = 0.0

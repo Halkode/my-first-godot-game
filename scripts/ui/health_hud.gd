@@ -1,13 +1,15 @@
 class_name HealthHUD
 extends CanvasLayer
 
-## HUD simples de saúde: HP total, sangramento e dor.
+## HUD simples de saúde: HP total, sangramento e dor, além do
+## relógio do ciclo dia/noite.
 ## Construído em código e instanciado pelo HealthManager.
 
 var _hp_bar: ProgressBar
 var _hp_label: Label
 var _bleeding_label: Label
 var _pain_bar: ProgressBar
+var _clock_label: Label
 
 func _ready() -> void:
 	layer = 10
@@ -27,6 +29,10 @@ func _build_ui() -> void:
 	var vbox := VBoxContainer.new()
 	vbox.custom_minimum_size = Vector2(180, 0)
 	panel.add_child(vbox)
+
+	_clock_label = Label.new()
+	_clock_label.add_theme_color_override("font_color", Color(0.8, 0.85, 1.0))
+	vbox.add_child(_clock_label)
 
 	_hp_label = Label.new()
 	_hp_label.text = "HP: 100 / 100"
@@ -70,6 +76,13 @@ func _on_bleeding_changed(total_bleeding: float) -> void:
 
 func _on_pain_changed(total_pain: float) -> void:
 	_pain_bar.value = total_pain
+
+func _process(_delta: float) -> void:
+	_clock_label.text = "Dia %d — %s (%s)" % [
+		DayNightCycle.day_number,
+		DayNightCycle.get_time_string(),
+		DayNightCycle.get_phase_name(),
+	]
 
 # Debug (apenas em builds de desenvolvimento): F1 aplica um corte profundo
 # no braço direito para testar sangramento, dor e HUD.

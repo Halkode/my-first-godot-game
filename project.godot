@@ -28,6 +28,7 @@ NarrativeManager="*res://scripts/narrative_manager.gd"
 UIManager="*res://scripts/ui_manager.gd"
 HealthManager="*res://scripts/health/health_manager.gd"
 TreatmentManager="*res://scripts/treatment/treatment_manager.gd"
+PropCatalog="*res://scripts/world/prop_catalog.gd"
 
 [display]
 

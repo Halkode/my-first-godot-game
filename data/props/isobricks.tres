@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="PropData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/prop_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dshpj7g41jo0d" path="res://assets/isometric_tiles/isobricks.png" id="2_tex"]
+
+[resource]
+script = ExtResource("1_script")
+id = "isobricks"
+display_name = "Tijolos"
+category = 1
+texture = ExtResource("2_tex")
+content_region = Rect2i(65, 120, 377, 274)
+suggested_scale = 0.0849
+footprint_tiles = 1.0
+blocks_movement = true
+interactable = false
+light_energy = 0.0

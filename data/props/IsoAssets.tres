@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="PropData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/prop_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://ek486sa7towr" path="res://assets/isometric_tiles/IsoAssets.png" id="2_tex"]
+
+[resource]
+script = ExtResource("1_script")
+id = "IsoAssets"
+display_name = "Diversos"
+category = 7
+texture = ExtResource("2_tex")
+content_region = Rect2i(134, 14, 243, 482)
+suggested_scale = 0.0658
+footprint_tiles = 0.5
+blocks_movement = false
+interactable = false
+light_energy = 0.0

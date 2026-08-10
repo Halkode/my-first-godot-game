@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="PropData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/prop_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://cvgn3e3ygkypr" path="res://assets/isometric_tiles/Iso-Pit.png" id="2_tex"]
+
+[resource]
+script = ExtResource("1_script")
+id = "Iso-Pit"
+display_name = "Fosso"
+category = 2
+texture = ExtResource("2_tex")
+content_region = Rect2i(4, 97, 494, 287)
+suggested_scale = 0.0648
+footprint_tiles = 1.0
+blocks_movement = true
+interactable = true
+light_energy = 0.0

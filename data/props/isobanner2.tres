@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="PropData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/prop_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://inhjtuewsfwi" path="res://assets/isometric_tiles/isobanner2.png" id="2_tex"]
+
+[resource]
+script = ExtResource("1_script")
+id = "isobanner2"
+display_name = "Estandarte 2"
+category = 7
+texture = ExtResource("2_tex")
+content_region = Rect2i(179, 16, 163, 457)
+suggested_scale = 0.0982
+footprint_tiles = 0.5
+blocks_movement = false
+interactable = false
+light_energy = 0.0

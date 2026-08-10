@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="PropData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/prop_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dl24gngawlh8i" path="res://assets/isometric_tiles/isocrate.png" id="2_tex"]
+
+[resource]
+script = ExtResource("1_script")
+id = "isocrate"
+display_name = "Caixote"
+category = 4
+texture = ExtResource("2_tex")
+content_region = Rect2i(33, 1, 436, 498)
+suggested_scale = 0.0514
+footprint_tiles = 0.7
+blocks_movement = true
+interactable = true
+light_energy = 0.0

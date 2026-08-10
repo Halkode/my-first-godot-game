@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="PropData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/prop_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://2yc8ew5syfo1" path="res://assets/isometric_tiles/isowalltorch2.png" id="2_tex"]
+
+[resource]
+script = ExtResource("1_script")
+id = "isowalltorch2"
+display_name = "Tocha de parede 2"
+category = 5
+texture = ExtResource("2_tex")
+content_region = Rect2i(143, 75, 209, 339)
+suggested_scale = 0.0612
+footprint_tiles = 0.4
+blocks_movement = false
+interactable = true
+light_energy = 0.8
